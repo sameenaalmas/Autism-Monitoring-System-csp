@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Observation History - Autism Monitor</title>
+
+    <script>
+        (function () {
+            try {
+                const savedTheme = localStorage.getItem("autism-monitor-theme");
+                document.documentElement.dataset.theme =
+                    savedTheme === "dark" ? "dark" : "light";
+            } catch (error) {
+                document.documentElement.dataset.theme = "light";
+            }
+        })();
+    </script>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        
+/* ==========================================
+   OBSERVATION HISTORY
+   WARM PEACH + BEIGE THEME
+   ========================================== */
+
+html[data-theme="light"] {
+    --page-bg: #fbf3ec;
+    --page-text: #45362f;
+    --muted-text: #806f64;
+    --panel-bg: #fffdf9;
+    --panel-border: #ead9cb;
+    --table-head-bg: #f2dfcf;
+    --table-hover-bg: #fff1e5;
+    --link-text: #a45f43;
+    --accent: #d79a79;
+    --accent-soft: #f8e9dd;
+    --score-bg: #f8e5d8;
+    --score-text: #8a4d32;
+    --success-bg: #e0f1e5;
+    --success-text: #286443;
+    --warning-bg: #fae9c8;
+    --warning-text: #87551c;
+    --shadow: rgba(119, 76, 51, 0.09);
+}
+
+html[data-theme="dark"] {
+    --page-bg: #28211f;
+    --page-text: #f3e8df;
+    --muted-text: #c7b3a6;
+    --panel-bg: #382d29;
+    --panel-border: #5b463d;
+    --table-head-bg: #4b3932;
+    --table-hover-bg: #493831;
+    --link-text: #efb394;
+    --accent: #c98565;
+    --accent-soft: #44342e;
+    --score-bg: #563b32;
+    --score-text: #ffd1b6;
+    --success-bg: #254638;
+    --success-text: #b8ebcb;
+    --warning-bg: #594125;
+    --warning-text: #ffe0a3;
+    --shadow: rgba(0, 0, 0, 0.18);
+}
+
+/* PAGE */
+
+html[data-theme] body {
+    background: var(--page-bg) !important;
+    color: var(--page-text) !important;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.history-container {
+    max-width: 1500px;
+    margin: 30px auto;
+    padding: 0 24px 35px;
+    color: var(--page-text);
+}
+
+.history-container h1,
+.history-container h2,
+.history-container h3,
+.history-container p,
+.history-container strong {
+    color: var(--page-text);
+}
+
+.history-container p {
+    line-height: 1.65;
+}
+
+.history-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin: 22px 0;
+}
+
+.history-header h1 {
+    margin-bottom: 8px;
+}
+
+.history-header p {
+    color: var(--muted-text);
+}
+
+.history-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* NAVIGATION */
+
+html[data-theme="light"] .navbar {
+    background: #fffaf5 !important;
+    color: var(--page-text) !important;
+    border-bottom: 1px solid var(--panel-border);
+    box-shadow: 0 3px 14px var(--shadow);
+}
+
+html[data-theme="dark"] .navbar {
+    background: #332724 !important;
+    color: var(--page-text) !important;
+    border-bottom: 1px solid var(--panel-border);
+}
+
+html[data-theme] .navbar a {
+    color: var(--page-text) !important;
+}
+
+html[data-theme] .navbar a:hover,
+html[data-theme] .navbar a.active {
+    color: var(--link-text) !important;
+}
+
+html[data-theme] .back-link {
+    max-width: 1500px;
+    margin: 20px auto;
+    padding: 0 24px;
+}
+
+html[data-theme] .back-link a {
+    color: var(--link-text) !important;
+    text-decoration: none;
+}
+
+/* THEME TOGGLE */
+
+html[data-theme] .theme-toggle {
+    border: 1px solid var(--panel-border) !important;
+    border-radius: 8px;
+    padding: 9px 12px;
+    background: var(--panel-bg) !important;
+    color: var(--page-text) !important;
+    cursor: pointer;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+html[data-theme] .theme-toggle:hover {
+    background: var(--accent-soft) !important;
+}
+
+/* SUMMARY CARDS */
+
+.history-summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(180px, 1fr));
+    gap: 18px;
+    margin: 22px 0;
+}
+
+.history-summary-card,
+.history-card,
+.history-empty,
+.history-note {
+    background: var(--panel-bg) !important;
+    color: var(--page-text) !important;
+    border: 1px solid var(--panel-border) !important;
+    border-radius: 14px;
+    box-shadow: 0 4px 14px var(--shadow);
+}
+
+.history-summary-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 22px;
+    border-top: 3px solid var(--accent) !important;
+}
+
+.history-summary-icon {
+    font-size: 28px;
+}
+
+.history-summary-card strong,
+.history-summary-card span {
+    display: block;
+    color: var(--page-text);
+}
+
+.history-summary-card strong {
+    font-size: 25px;
+    margin-bottom: 5px;
+}
+
+.history-summary-card div span {
+    color: var(--muted-text);
+}
+
+/* OBSERVATION TABLE CARD */
+
+.history-card {
+    padding: 12px;
+    border-top: 3px solid var(--accent) !important;
+}
+
+.history-table-wrapper {
+    width: 100%;
+    max-width: 100%;
+    max-height: 70vh;
+    overflow: auto;
+    border-radius: 10px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.history-table {
+    width: max-content;
+    min-width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: auto;
+    color: var(--page-text);
+}
+
+.history-table th,
+.history-table td {
+    padding: 13px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--panel-border);
+    vertical-align: middle;
+    line-height: 1.5;
+}
+
+.history-table th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--table-head-bg) !important;
+    color: var(--page-text) !important;
+    font-size: 13px;
+    min-width: 115px;
+    white-space: normal;
+    line-height: 1.4;
+}
+
+.history-table td {
+    background: var(--panel-bg) !important;
+    color: var(--page-text) !important;
+    font-size: 13px;
+}
+
+.history-table tbody tr:hover td {
+    background: var(--table-hover-bg) !important;
+}
+
+/* Keep long remarks manageable */
+
+.history-table td:nth-child(10) {
+    min-width: 150px;
+    max-width: 240px;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+.history-table td:nth-child(1),
+.history-table td:nth-child(8),
+.history-table td:nth-child(9),
+.history-table td:nth-child(11) {
+    white-space: nowrap;
+}
+
+/* RATING BADGES */
+
+.score-badge {
+    display: inline-block;
+    min-width: 28px;
+    padding: 5px 8px;
+    text-align: center;
+    border-radius: 7px;
+    background: var(--score-bg) !important;
+    color: var(--score-text) !important;
+    font-weight: 700;
+}
+
+/* ATTENDANCE AND PATTERN BADGES */
+
+.present-badge,
+.absent-badge,
+.history-anomaly,
+.history-normal {
+    display: inline-block;
+    padding: 5px 8px;
+    border-radius: 7px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.present-badge,
+.history-normal {
+    background: var(--success-bg) !important;
+    color: var(--success-text) !important;
+}
+
+.absent-badge,
+.history-anomaly {
+    background: var(--warning-bg) !important;
+    color: var(--warning-text) !important;
+}
+
+.no-remarks {
+    color: var(--muted-text) !important;
+}
+
+.remarks-text {
+    color: var(--page-text);
+    overflow-wrap: anywhere;
+}
+
+/* FOLLOW-UP STATUS */
+
+html[data-theme] .history-container .status-normal {
+    display: inline-block;
+    padding: 5px 8px;
+    border-radius: 7px;
+    background: var(--success-bg) !important;
+    color: var(--success-text) !important;
+    font-weight: 700;
+}
+
+html[data-theme] .history-container .status-warning {
+    display: inline-block;
+    padding: 5px 8px;
+    border-radius: 7px;
+    background: var(--warning-bg) !important;
+    color: var(--warning-text) !important;
+    font-weight: 700;
+}
+
+html[data-theme] .history-container .status-neutral {
+    display: inline-block;
+    padding: 5px 8px;
+    border-radius: 7px;
+    background: var(--accent-soft) !important;
+    color: var(--page-text) !important;
+    font-weight: 600;
+}
+
+/* ACTION BUTTONS */
+
+.observation-actions {
+    white-space: nowrap;
+}
+
+.observation-actions form {
+    display: inline-block;
+    margin: 4px 0;
+}
+
+.observation-edit-btn,
+.observation-delete-btn,
+.progress-history-btn,
+.add-history-btn {
+    display: inline-block;
+    padding: 9px 12px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.observation-edit-btn,
+.progress-history-btn,
+.add-history-btn {
+    background: #a96343 !important;
+    color: #ffffff !important;
+}
+
+.observation-edit-btn:hover,
+.progress-history-btn:hover,
+.add-history-btn:hover {
+    background: #874b32 !important;
+    color: #ffffff !important;
+    transform: translateY(-1px);
+}
+
+.observation-delete-btn {
+    background: #b94040 !important;
+    color: #ffffff !important;
+}
+
+.observation-delete-btn:hover {
+    background: #922f2f !important;
+    color: #ffffff !important;
+}
+
+/* EMPTY STATE */
+
+.history-empty {
+    text-align: center;
+    padding: 45px 20px;
+    margin: 22px 0;
+    border-top: 3px solid var(--accent) !important;
+}
+
+.history-empty-icon {
+    font-size: 42px;
+    margin-bottom: 12px;
+}
+
+.history-empty p {
+    margin: 12px 0 22px;
+    color: var(--muted-text);
+}
+
+/* INFORMATION NOTE */
+
+.history-note {
+    margin-top: 24px;
+    padding: 20px;
+    line-height: 1.6;
+    border-left: 4px solid var(--accent) !important;
+    background: var(--accent-soft) !important;
+}
+
+.history-note strong {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.history-note p + p {
+    margin-top: 10px;
+}
+
+.history-note p {
+    color: var(--page-text);
+}
+
+/* FLASH MESSAGES: retain existing toast styling */
+
+/* RESPONSIVE LAYOUT */
+
+@media (max-width: 800px) {
+    .history-container {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .history-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .history-header {
+        align-items: flex-start;
+    }
+
+    html[data-theme] .back-link {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+}
+
+@media (max-width: 768px) {
+    .history-table-wrapper {
+        max-height: 65vh;
+    }
+
+    .history-table th,
+    .history-table td {
+        padding: 11px 10px;
+    }
+
+    .history-header h1 {
+        font-size: 24px;
+    }
+
+    .history-card {
+        padding: 8px;
+    }
+}
+
+
+
+/* Compact observation history table */
+.history-table {
+    width: 100%;
+    table-layout: fixed;
+    font-size: 12px;
+    border-collapse: collapse;
+}
+
+.history-table th,
+.history-table td {
+    padding: 9px 6px;
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: normal;
+    vertical-align: middle;
+}
+
+/* Keep score columns compact */
+.history-table th:nth-child(n+2):nth-child(-n+8),
+.history-table td:nth-child(n+2):nth-child(-n+8) {
+    text-align: center;
+}
+
+/* Give Remarks and Follow-up enough room */
+.history-table th:nth-child(10),
+.history-table td:nth-child(10) {
+    width: 130px;
+}
+
+.history-table th:nth-child(11),
+.history-table td:nth-child(11) {
+    width: 135px;
+}
+
+/* Keep teacher actions usable */
+.history-table th:last-child,
+.history-table td.observation-actions {
+    width: 145px;
+}
+
+.history-table .observation-actions {
+    white-space: normal;
+}
+
+.history-table .observation-actions a,
+.history-table .observation-actions button {
+    font-size: 11px;
+    padding: 6px 8px;
+}
+
+
+
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="logo">🧠 Autism Monitor</div>
+
+    {% if session.get('user_role') == 'teacher' %}
+    <div class="nav-links">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('students') }}" class="active">Students</a>
+        <a href="{{ url_for('add_observation') }}">Add Observation</a>
+        <button type="button" id="themeToggle" class="theme-toggle">
+            🌙 Dark Mode
+        </button>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+    {% endif %}
+</nav>
+
+<div class="back-link">
+    {% if session.get('user_role') == 'parent' %}
+        <a href="{{ url_for('parent_dashboard') }}">← Back to Parent Portal</a>
+    {% elif session.get('user_role') == 'teacher' %}
+        <a href="{{ url_for('students') }}">← Back to Students</a>
+    {% endif %}
+</div>
+
+<main class="history-container">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="toast-container">
+                {% for category, message in messages %}
+                    <div class="toast-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <div class="history-header">
+        <div>
+            <h1>Observation History</h1>
+            <p>
+                Recorded observations for
+                <strong>{{ student_name }}</strong>
+                ({{ student_id }})
+            </p>
+        </div>
+
+        <div class="history-actions">
+            <a href="{{ url_for('student_progress', student_id=student_id) }}"
+               class="progress-history-btn">
+                📈 View Progress
+            </a>
+        </div>
+    </div>
+
+    <div class="history-summary">
+        <div class="history-summary-card">
+            <span class="history-summary-icon">📋</span>
+            <div>
+                <strong>{{ observations|length }}</strong>
+                <span>Total Observations</span>
+            </div>
+        </div>
+
+        <div class="history-summary-card">
+            <span class="history-summary-icon">⚠️</span>
+            <div>
+                <strong>
+                    {{
+                        observations
+                        |selectattr("anomaly", "equalto", -1)
+                        |list
+                        |length
+                    }}
+                </strong>
+                <span>Unusual Patterns</span>
+            </div>
+        </div>
+    </div>
+
+    {% if observations %}
+    <div class="history-card">
+        <div class="history-table-wrapper">
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Communication</th>
+                        <th>Social Interaction</th>
+                        <th>Learning</th>
+                        <th>Hyperactivity</th>
+                        <th>Emotional State</th>
+                        <th>Sound Sensitivity</th>
+                        <th>Attendance</th>
+                        <th>Pattern</th>
+<th>Remarks</th>
+<th>Follow-up Status</th>
+{% if session.get('user_role') == 'teacher' %}
+<th>Actions</th>
+{% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for observation in observations %}
+                    {% set is_absent = observation.attendance|default('', true)|string|lower == 'absent' %}
+                    <tr>
+                        <td><span class="history-date">{{ observation.date }}</span></td>
+
+                        {% for field in ['communication', 'social_interaction', 'learning', 'hyperactivity', 'emotional_state', 'sound_sensitivity'] %}
+                        <td>
+                            {% set value = observation[field] %}
+                            {% if not is_absent and value is not none and value|string|lower != 'nan' and value|string|trim != '' %}
+                                <span class="score-badge">{{ value }}</span>
+                            {% else %}
+                                <span>—</span>
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+
+                        <td>
+                            {% if observation.attendance|default('', true)|string|lower == 'present' %}
+                                <span class="present-badge">Present</span>
+                            {% elif is_absent %}
+                                <span class="absent-badge">Absent</span>
+                            {% else %}
+                                <span>Not recorded</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if is_absent %}
+                                <span title="No behavior ratings were collected because the student was absent.">— Not Analyzed</span>
+                            {% elif observation.anomaly_status|default('', true) == 'Not enough data' %}
+                                <span>Not Enough Data</span>
+                            {% elif observation.anomaly_status|default('', true) == 'Unusual Pattern' or observation.anomaly == -1 %}
+                                <span class="history-anomaly">⚠️ Unusual</span>
+                            {% elif observation.anomaly_status|default('', true) == 'Normal Pattern' or observation.anomaly == 1 %}
+                                <span class="history-normal">✓ Normal</span>
+                            {% else %}
+                                <span>Not Analyzed</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if observation.remarks %}
+                                <span class="remarks-text">{{ observation.remarks }}</span>
+                            {% else %}
+                                <span class="no-remarks">No remarks</span>
+                            {% endif %}
+                        </td>
+                        <td>
+    {% if observation.followup %}
+        {% set followup_status = observation.followup.review_status %}
+
+        {% if followup_status == 'Reviewed' %}
+            <span class="status-normal">✓ Reviewed</span>
+        {% elif followup_status == 'Follow-up Required' %}
+            <span class="status-warning">⚠ Follow-up Required</span>
+        {% else %}
+            <span class="status-neutral">Pending</span>
+        {% endif %}
+    {% else %}
+        <span class="status-neutral">Not Reviewed</span>
+    {% endif %}
+</td>
+
+                        {% if session.get('user_role') == 'teacher' %}
+                        <td class="observation-actions">
+                            <a class="observation-edit-btn"
+                               href="{{ url_for('edit_observation', student_id=student_id, observation_id=observation._id) }}">
+                                ✏️ Edit
+                            </a>
+                            <a class="observation-edit-btn"
+   href="{{ url_for(
+       'teacher_followup',
+       student_id=student_id,
+       observation_id=observation._id
+   ) }}">
+    📝 Follow-up
+</a>
+
+                            <form method="POST"
+                                  action="{{ url_for('delete_observation', student_id=student_id, observation_id=observation._id) }}"
+                                  onsubmit="return confirm('Are you sure you want to delete this observation? This action cannot be undone.');">
+                                <button type="submit" class="observation-delete-btn">
+                                    🗑️ Delete
+                                </button>
+                            </form>
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="history-empty">
+        <div class="history-empty-icon">📋</div>
+        <h2>No Observations Found</h2>
+        <p>There are currently no recorded observations for this student.</p>
+
+        {% if session.get('user_role') == 'teacher' %}
+        <a href="{{ url_for('add_observation') }}" class="add-history-btn">
+            + Add Observation
+        </a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="history-note">
+        <strong>💡 About Observation History</strong>
+        <p>
+            This page displays the observations recorded for the student.
+            Pattern status is generated by the anomaly detection model
+            using available, complete observation data.
+        </p>
+        <p>
+            Absent records are excluded from behavior analysis because no
+            observation ratings were collected. Unusual patterns are indicators
+            for further review, not medical diagnoses.
+        </p>
+    </div>
+</main>
+
+<script>
+    (function () {
+        const themeToggle = document.getElementById("themeToggle");
+
+        if (!themeToggle) return;
+
+        function applyTheme(theme) {
+            document.documentElement.dataset.theme = theme;
+
+            try {
+                localStorage.setItem("autism-monitor-theme", theme);
+            } catch (error) {
+                console.warn("Could not save theme preference.");
+            }
+
+            themeToggle.textContent =
+                theme === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode";
+        }
+
+        applyTheme(
+            document.documentElement.dataset.theme === "dark"
+                ? "dark"
+                : "light"
+        );
+
+        themeToggle.addEventListener("click", function () {
+            const currentTheme = document.documentElement.dataset.theme;
+            applyTheme(currentTheme === "dark" ? "light" : "dark");
+        });
+    })();
+</script>
+
+</body>
+</html>

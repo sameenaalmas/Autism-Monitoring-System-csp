@@ -1,0 +1,294 @@
+
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Add Observation - Autism Monitor</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <!-- NAVIGATION -->
+    <nav class="navbar">
+        <div class="logo">
+            🧠 Autism Monitor
+        </div>
+
+        <div class="nav-links">
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('students') }}">Students</a>
+            <a href="{{ url_for('add_observation') }}" class="active">
+                Add Observation
+            </a>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="observation-container">
+
+        <div class="page-heading">
+            <h1>Add Student Observation</h1>
+            <p>
+                Record the student's daily progress and
+                observed behavior patterns.
+            </p>
+        </div>
+
+        <!-- OBSERVATION FORM -->
+        <form method="POST"
+              action="{{ url_for('add_observation') }}"
+              class="observation-form">
+
+            <!-- STUDENT INFORMATION: ALWAYS VISIBLE -->
+            <div class="form-section" id="student-information">
+
+                <div class="section-title">
+                    <span>👤</span>
+                    <div>
+                        <h2>Student Information</h2>
+                        <p>Enter the basic student details.</p>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="student_id">Student ID / Roll Number</label>
+                        <input
+                            type="text"
+                            id="student_id"
+                            name="student_id"
+                            placeholder="Example: ST001"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="student_name">Student Name</label>
+                        <input
+                            type="text"
+                            id="student_name"
+                            name="student_name"
+                            placeholder="Enter student name"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="observation_date_display">
+                            Observation Date
+                        </label>
+                        <input
+                            type="text"
+                            id="observation_date_display"
+                            value="Today's date"
+                            disabled
+                        >
+                        <small>
+                            The current date will be recorded automatically.
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="attendance">Attendance</label>
+                        <select id="attendance" name="attendance" required>
+                            <option value="">Select attendance</option>
+                            <option value="Present">Present</option>
+                            <option value="Absent">Absent</option>
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- OBSERVATION PARAMETERS: HIDDEN WHEN ABSENT -->
+            <div class="form-section"
+                 id="observation-section"
+                 hidden>
+
+                <div class="section-title">
+                    <span>📊</span>
+                    <div>
+                        <h2>Observation Parameters</h2>
+                        <p>
+                            Rate the observed behavior on a scale of 1 to 5.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="rating-info">
+                    <div><strong>1</strong> Low</div>
+                    <div><strong>2</strong> Slightly Low</div>
+                    <div><strong>3</strong> Moderate</div>
+                    <div><strong>4</strong> High</div>
+                    <div><strong>5</strong> Very High</div>
+                </div>
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="communication">Communication</label>
+                        <select id="communication" name="communication" required disabled>
+                            <option value="">Select level</option>
+                            <option value="1">1 - Low</option>
+                            <option value="2">2 - Slightly Low</option>
+                            <option value="3">3 - Moderate</option>
+                            <option value="4">4 - High</option>
+                            <option value="5">5 - Very High</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="social_interaction">Social Interaction</label>
+                        <select id="social_interaction" name="social_interaction" required disabled>
+                            <option value="">Select level</option>
+                            <option value="1">1 - Low</option>
+                            <option value="2">2 - Slightly Low</option>
+                            <option value="3">3 - Moderate</option>
+                            <option value="4">4 - High</option>
+                            <option value="5">5 - Very High</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="learning">Learning</label>
+                        <select id="learning" name="learning" required disabled>
+                            <option value="">Select level</option>
+                            <option value="1">1 - Low</option>
+                            <option value="2">2 - Slightly Low</option>
+                            <option value="3">3 - Moderate</option>
+                            <option value="4">4 - High</option>
+                            <option value="5">5 - Very High</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="hyperactivity">Hyperactivity</label>
+                        <select id="hyperactivity" name="hyperactivity" required disabled>
+                            <option value="">Select level</option>
+                            <option value="1">1 - Low</option>
+                            <option value="2">2 - Slightly Low</option>
+                            <option value="3">3 - Moderate</option>
+                            <option value="4">4 - High</option>
+                            <option value="5">5 - Very High</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="emotional_state">Emotional State</label>
+                        <select id="emotional_state" name="emotional_state" required disabled>
+                            <option value="">Select level</option>
+                            <option value="1">1 - Low</option>
+                            <option value="2">2 - Slightly Low</option>
+                            <option value="3">3 - Moderate</option>
+                            <option value="4">4 - High</option>
+                            <option value="5">5 - Very High</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sound_sensitivity">Sound Sensitivity</label>
+                        <select id="sound_sensitivity" name="sound_sensitivity" required disabled>
+                            <option value="">Select level</option>
+                            <option value="1">1 - Low</option>
+                            <option value="2">2 - Slightly Low</option>
+                            <option value="3">3 - Moderate</option>
+                            <option value="4">4 - High</option>
+                            <option value="5">5 - Very High</option>
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- TEACHER REMARKS: ALWAYS VISIBLE -->
+            <div class="form-section" id="teacher-remarks">
+
+                <div class="section-title">
+                    <span>📝</span>
+                    <div>
+                        <h2>Teacher Remarks</h2>
+                        <p>
+                            Add any important note about today's attendance
+                            or session.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="remarks">Remarks</label>
+                    <textarea
+                        id="remarks"
+                        name="remarks"
+                        rows="5"
+                        placeholder="Example: Student participated in the group activity, or student was absent today."
+                    ></textarea>
+                </div>
+            </div>
+
+            <!-- INFORMATION NOTE -->
+            <div class="observation-note">
+                <strong>💡 Note</strong>
+                <p>
+                    These records help monitor recorded progress and identify
+                    unusual patterns over time. The system does not provide
+                    a medical diagnosis.
+                </p>
+            </div>
+
+            <!-- BUTTONS -->
+            <div class="form-actions">
+                <a href="{{ url_for('dashboard') }}" class="cancel-btn">
+                    Cancel
+                </a>
+
+                <button type="submit" class="submit-btn">
+                    💾 Save Observation
+                </button>
+            </div>
+
+        </form>
+    </main>
+
+    <!-- ATTENDANCE-DEPENDENT OBSERVATION FIELDS -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const attendance = document.getElementById("attendance");
+            const observationSection =
+                document.getElementById("observation-section");
+
+            const ratingFields =
+                observationSection.querySelectorAll("select");
+
+            function updateObservationFields() {
+                const isPresent = attendance.value === "Present";
+
+                // Hide or show ONLY the observation section.
+                observationSection.hidden = !isPresent;
+
+                ratingFields.forEach(function (field) {
+                    field.disabled = !isPresent;
+                    field.required = isPresent;
+
+                    if (!isPresent) {
+                        field.value = "";
+                    }
+                });
+            }
+
+            attendance.addEventListener(
+                "change",
+                updateObservationFields
+            );
+
+            updateObservationFields();
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+
+Flask
+gunicorn
+pandas
+python-dotenv
+pymongo
+scikit-learn
+Flask-Mail
+itsdangerous
+Werkzeug

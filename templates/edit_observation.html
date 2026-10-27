@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Observation - Autism Monitor</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="logo">🧠 Autism Monitor</div>
+
+    <div class="nav-links">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('students') }}">Students</a>
+        <a href="{{ url_for('add_observation') }}">Add Observation</a>
+    </div>
+</nav>
+
+<main class="container">
+
+    <h1>Edit Observation</h1>
+
+    <p>
+        Student:
+        <strong>{{ student_name }}</strong>
+        ({{ student_id }})
+    </p>
+
+    {% if error_message %}
+        <div class="error-message">
+            {{ error_message }}
+        </div>
+    {% endif %}
+
+    <form method="POST" class="edit-observation-form">
+
+        <label for="date">Observation Date</label>
+
+        <input
+            type="date"
+            id="date"
+            name="date"
+            value="{{ observation.date }}"
+            required>
+
+        <label for="attendance">Attendance</label>
+
+        <select id="attendance" name="attendance" required>
+            <option value="Present"
+                {% if observation.attendance|default('Present', true)|lower == 'present' %}
+                    selected
+                {% endif %}>
+                Present
+            </option>
+
+            <option value="Absent"
+                {% if observation.attendance|default('', true)|lower == 'absent' %}
+                    selected
+                {% endif %}>
+                Absent
+            </option>
+        </select>
+
+        <div id="ratings-section">
+
+            {% set rating_fields = [
+                ('communication', 'Communication'),
+                ('social_interaction', 'Social Interaction'),
+                ('learning', 'Learning'),
+                ('hyperactivity', 'Hyperactivity'),
+                ('emotional_state', 'Emotional State'),
+                ('sound_sensitivity', 'Sound Sensitivity')
+            ] %}
+
+            {% for field, label in rating_fields %}
+
+                <label for="{{ field }}">{{ label }}</label>
+
+                <select
+                    id="{{ field }}"
+                    name="{{ field }}"
+                    class="rating-field">
+
+                    <option value="">Select rating</option>
+
+                    {% for score in range(1, 6) %}
+                        <option
+                            value="{{ score }}"
+                            {% if observation.get(field) is not none
+                                  and observation.get(field)|string == score|string %}
+                                selected
+                            {% endif %}>
+                            {{ score }}
+                        </option>
+                    {% endfor %}
+
+                </select>
+
+            {% endfor %}
+
+        </div>
+
+        <label for="remarks">Remarks</label>
+
+        <textarea
+            id="remarks"
+            name="remarks"
+            rows="4">{{ observation.remarks|default('', true) }}</textarea>
+
+        <button type="submit" class="observation-edit-btn">
+            Save Changes
+        </button>
+
+        <a
+            href="{{ url_for('observation_history', student_id=student_id) }}"
+            class="observation-cancel-btn">
+            Cancel
+        </a>
+
+    </form>
+
+</main>
+
+<script>
+const attendanceSelect = document.getElementById("attendance");
+const ratingsSection = document.getElementById("ratings-section");
+const ratingFields = document.querySelectorAll(".rating-field");
+
+function updateRatingVisibility() {
+    const isAbsent = attendanceSelect.value === "Absent";
+
+    ratingsSection.hidden = isAbsent;
+
+    ratingFields.forEach(function (field) {
+        field.disabled = isAbsent;
+        field.required = !isAbsent;
+
+        if (isAbsent) {
+            field.value = "";
+        }
+    });
+}
+
+attendanceSelect.addEventListener("change", updateRatingVisibility);
+
+updateRatingVisibility();
+</script>
+
+</body>
+</html>

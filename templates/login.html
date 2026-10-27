@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Login | Autism Monitor</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/auth.css') }}"
+    >
+</head>
+
+<body>
+
+    <main class="auth-page">
+
+        <!-- Left Side -->
+        <section class="auth-welcome">
+
+            <a
+                href="{{ url_for('index') }}"
+                class="back-home"
+            >
+                ← Back to Home
+            </a>
+
+            <div class="welcome-content">
+
+                
+                <h1>
+                    Autism Monitor
+                </h1>
+
+                <p>
+                    A digital platform for meaningful
+                    behavior and progress monitoring.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- Right Side -->
+        <section class="auth-panel">
+
+            <div class="auth-container">
+                {% if login_error %}
+    <div class="login-message" role="alert">
+        {{ login_error }}
+    </div>
+{% endif %}
+
+                <div class="auth-heading">
+
+                    <span class="small-label">
+                        WELCOME BACK
+                    </span>
+
+                    <h2>
+                        Sign in to continue
+                    </h2>
+
+                    <p>
+                        Access your Autism Monitor account.
+                    </p>
+
+                </div>
+
+
+                <!-- Role Selection -->
+
+                <div class="role-section">
+
+                    <label class="field-label">
+                        Continue as
+                    </label>
+
+                    <div class="role-options">
+
+                        <button
+                            type="button"
+                            class="role-card active"
+                            id="teacherRole"
+                            onclick="selectRole('teacher')"
+                        >
+                            <span class="role-icon">
+                                👩‍🏫
+                            </span>
+
+                            <span>
+                                <strong>Teacher</strong>
+                                <small>
+                                    Manage observations
+                                </small>
+                            </span>
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="role-card"
+                            id="parentRole"
+                            onclick="selectRole('parent')"
+                        >
+                            <span class="role-icon">
+                                👨‍👩‍👧
+                            </span>
+
+                            <span>
+                                <strong>Parent</strong>
+                                <small>
+                                    View child progress
+                                </small>
+                            </span>
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Login Form -->
+
+                <form
+    class="login-form"
+    method="POST"
+    action="{{ url_for('login') }}"
+>
+{% if signup_success %}
+    <div class="signup-success">
+        {{ signup_success }}
+    </div>
+{% endif %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="signup-success {{ category }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+
+    <input
+        type="hidden"
+        id="role"
+        name="role"
+        value="{{ selected_role or 'teacher' }}"
+    >
+
+    <div class="form-group" id="emailGroup">
+        <label for="email">Email Address</label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="Enter your email"
+                            required
+                        >
+
+                    </div>
+
+
+                    
+<div class="form-group" id="passwordGroup">
+
+    <div class="password-label">
+
+        <label for="password">
+            Password
+        </label>
+
+        <a href="{{ url_for('forgot_password') }}">
+            Forgot password?
+        </a>
+
+    </div>
+
+     <div class="password-input-wrap">
+    <input
+        type="password"
+        id="password"
+        name="password"
+        placeholder="Enter your password"
+        autocomplete="current-password"
+        required
+    >
+
+    <button
+        type="button"
+        class="password-toggle"
+        id="togglePassword"
+        aria-label="Show password"
+        aria-pressed="false"
+    >
+        <svg
+            id="eyeIcon"
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+        >
+            <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"/>
+            <circle cx="12" cy="12" r="3"/>
+        </svg>
+    </button>
+</div>
+
+</div>
+
+
+                    <!-- Parent-only child verification fields -->
+<div id="parentFields" hidden>
+
+    <div class="form-group">
+        <label for="child_name">Child's Full Name</label>
+
+        <input
+            type="text"
+            id="child_name"
+            name="child_name"
+            placeholder="Enter your child's full name"
+            autocomplete="off"
+            disabled
+        >
+    </div>
+
+    <div class="form-group">
+        <label for="child_roll_number">Child's Roll Number</label>
+
+        <input
+            type="text"
+            id="child_roll_number"
+            name="child_roll_number"
+            placeholder="Enter your child's roll number"
+            autocomplete="off"
+            disabled
+        >
+    </div>
+
+</div>
+
+
+                    <div class="remember-row">
+
+                        <label class="remember-option">
+
+                            
+<input
+    type="checkbox"
+    id="remember"
+    name="remember"
+    value="yes"
+>
+
+
+                            <span>
+                                Remember me
+                            </span>
+
+                        </label>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="login-btn"
+                    >
+                        Sign In
+                        <span>→</span>
+                    </button>
+
+                </form>
+
+
+                <!-- Sign Up -->
+
+                <div class="signup-section">
+
+                    <span>
+                        Don't have an account?
+                    </span>
+
+                    <a href="{{ url_for('signup') }}">Create an account</a>
+
+                </div>
+
+
+                <div
+                    id="login-message"
+                    class="login-message"
+                ></div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    
+<script>
+    function selectRole(role) {
+
+        const teacherRole = document.getElementById("teacherRole");
+        const parentRole = document.getElementById("parentRole");
+        const roleInput = document.getElementById("role");
+
+        const parentFields = document.getElementById("parentFields");
+        const childName = document.getElementById("child_name");
+        const childRollNumber = document.getElementById("child_roll_number");
+
+        const emailGroup = document.getElementById("emailGroup");
+        const passwordGroup = document.getElementById("passwordGroup");
+
+        const email = document.getElementById("email");
+        const password = document.getElementById("password");
+
+        const rememberRow = document.querySelector(".remember-row");
+        const isParent = role === "parent";
+
+        teacherRole.classList.toggle("active", !isParent);
+        parentRole.classList.toggle("active", isParent);
+
+        roleInput.value = role;
+
+        parentFields.hidden = !isParent;
+        childName.disabled = !isParent;
+        childRollNumber.disabled = !isParent;
+
+        childName.required = isParent;
+        childRollNumber.required = isParent;
+
+        // Parent demo login does not use entered email/password.
+// Keep email and password visible for both roles.
+emailGroup.hidden = false;
+passwordGroup.hidden = false;
+
+email.disabled = false;
+password.disabled = false;
+
+// Required for the teacher; optional for the parent demo.
+email.required = !isParent;
+password.required = !isParent;
+        if (rememberRow) {
+            rememberRow.hidden = isParent;
+        }
+    }
+
+    // Restore the selected role after an unsuccessful login.
+    document.addEventListener("DOMContentLoaded", function () {
+        const initialRole =
+            document.getElementById("role").value || "teacher";
+
+        selectRole(initialRole);
+    });
+
+    
+const passwordInput = document.getElementById("password");
+const togglePassword = document.getElementById("togglePassword");
+const eyeIcon = document.getElementById("eyeIcon");
+
+togglePassword.addEventListener("click", function () {
+    const showPassword = passwordInput.type === "password";
+
+    passwordInput.type = showPassword ? "text" : "password";
+
+    togglePassword.setAttribute(
+        "aria-label",
+        showPassword ? "Hide password" : "Show password"
+    );
+
+    togglePassword.setAttribute(
+        "aria-pressed",
+        String(showPassword)
+    );
+
+    eyeIcon.innerHTML = showPassword
+        ? '<path d="M3 3l18 18"/><path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"/><path d="M9.9 5.2A10.8 10.8 0 0 1 12 5c6.4 0 10 7 10 7a15.8 15.8 0 0 1-4 4.7"/><path d="M6.2 6.2C3.5 8 2 12 2 12s3.6 7 10 7c1.1 0 2.1-.2 3-.5"/>'
+        : '<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>';
+});
+
+</script>
+
+
+</body>
+</html>

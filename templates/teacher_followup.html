@@ -1,0 +1,231 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Follow-up | Autism Monitor</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px 16px;
+            font-family: Arial, sans-serif;
+            background: #f4f5fb;
+            color: #283047;
+        }
+
+        .followup-container {
+            max-width: 720px;
+            margin: 25px auto;
+            padding: 30px;
+            background: #ffffff;
+            border: 1px solid #e5e7f2;
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(55, 65, 100, 0.08);
+        }
+
+        .followup-container h1 {
+            margin-top: 0;
+            color: #514b87;
+        }
+
+        .subtitle {
+            color: #626b80;
+            line-height: 1.6;
+        }
+
+        .student-info {
+            margin: 22px 0;
+            padding: 16px;
+            border-radius: 12px;
+            background: #f0effb;
+            line-height: 1.8;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d4d7e5;
+            border-radius: 9px;
+            font: inherit;
+            background: #fff;
+            color: #283047;
+        }
+
+        textarea {
+            min-height: 130px;
+            resize: vertical;
+        }
+
+        .checkbox-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            line-height: 1.5;
+        }
+
+        .checkbox-row input {
+            margin-top: 4px;
+        }
+
+        .button-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .save-button,
+        .back-button {
+            display: inline-block;
+            padding: 12px 18px;
+            border: none;
+            border-radius: 9px;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .save-button {
+            background: #625b9a;
+            color: white;
+        }
+
+        .save-button:hover {
+            background: #4e477f;
+        }
+
+        .back-button {
+            background: #ececf4;
+            color: #34384d;
+        }
+
+        .flash-message {
+            margin-bottom: 18px;
+            padding: 12px;
+            border-radius: 8px;
+            background: #fff3cd;
+            color: #725600;
+        }
+
+        .disclaimer {
+            margin-top: 24px;
+            color: #626b80;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 500px) {
+            .followup-container {
+                padding: 22px 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="followup-container">
+        <h1>📝 Teacher Follow-up</h1>
+
+        <p class="subtitle">
+            Record whether an observation has been reviewed and document
+            any appropriate follow-up action.
+        </p>
+
+        <div class="student-info">
+            <strong>Student:</strong> {{ student_name }}<br>
+            <strong>Student ID:</strong> {{ student_id }}<br>
+            <strong>Observation Date:</strong> {{ observation_date }}
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST"
+              action="{{ url_for(
+                  'save_observation_followup',
+                  student_id=student_id,
+                  observation_id=observation_id
+              ) }}">
+
+            <div class="form-group">
+                <label for="followup_status">Review Status</label>
+
+                <select id="followup_status" name="followup_status" required>
+                    <option value="Pending"
+                        {% if followup and followup.review_status == 'Pending' %}selected{% endif %}>
+                        Pending Review
+                    </option>
+
+                    <option value="Reviewed"
+                        {% if followup and followup.review_status == 'Reviewed' %}selected{% endif %}>
+                        Reviewed
+                    </option>
+
+                    <option value="Follow-up Required"
+                        {% if followup and followup.review_status == 'Follow-up Required' %}selected{% endif %}>
+                        Follow-up Required
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="followup_notes">Teacher's Notes</label>
+
+                <textarea id="followup_notes"
+                          name="followup_notes"
+                          maxlength="2000"
+                          placeholder="Record what was reviewed and any planned support...">{{ followup.teacher_notes if followup else '' }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="checkbox-row">
+                    <input type="checkbox"
+                           name="reobserve"
+                           value="yes"
+                           {% if followup and followup.reobserve %}checked{% endif %}>
+                    <span>Another observation is needed.</span>
+                </label>
+            </div>
+
+            <div class="button-row">
+                <button type="submit" class="save-button">
+                    💾 Save Follow-up
+                </button>
+
+                <a class="back-button"
+                   href="{{ url_for('observation_history', student_id=student_id) }}">
+                    ← Back to History
+                </a>
+            </div>
+        </form>
+
+        <p class="disclaimer">
+            Follow-up notes support educational review. An unusual pattern
+            is not a medical diagnosis.
+        </p>
+    </main>
+</body>
+</html>

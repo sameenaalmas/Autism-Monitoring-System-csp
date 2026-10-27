@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Parent Portal | Autism Monitor</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+    <style>
+        /* =====================================
+           PARENT DASHBOARD - PAGE LAYOUT
+        ===================================== */
+
+        
+/* =====================================
+   AUTISM MONITOR - PARENT DASHBOARD
+   Deep Teal + Sage + Champagne
+===================================== */
+
+
+/* =====================================
+   AUTISM MONITOR - PARENT DASHBOARD
+   Deep Teal + Sage + Champagne
+===================================== */
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(
+        135deg,
+        #e8f1ef 0%,
+        #f5f8f6 55%,
+        #e0ece9 100%
+    );
+    color: #203438;
+}
+
+/* Main content */
+.parent-page {
+    max-width: 1150px;
+    margin: 0 auto;
+    padding: 38px 24px 30px;
+}
+
+/* Navigation */
+.parent-navbar {
+    min-height: 76px;
+    padding: 12px 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    background: #ffffff;
+    border-bottom: 3px solid #c9ad79;
+    box-shadow: 0 4px 18px rgba(18, 63, 70, 0.07);
+}
+
+.parent-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 27px;
+    font-weight: 700;
+    letter-spacing: -0.7px;
+    color: #123f46;
+}
+
+.parent-brand-icon {
+    font-size: 34px;
+    line-height: 1;
+}
+
+.parent-logout {
+    display: inline-block;
+    padding: 10px 20px;
+    border: 1px solid #cbdcd7;
+    border-radius: 9px;
+    background: #ffffff;
+    color: #123f46;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background 0.2s ease,
+                color 0.2s ease;
+}
+
+.parent-logout:hover {
+    background: #123f46;
+    color: #ffffff;
+}
+
+/* Welcome section */
+.parent-welcome {
+    margin-bottom: 28px;
+}
+
+.parent-eyebrow {
+    margin-bottom: 9px;
+    color: #8a7043;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+}
+
+.parent-welcome h1 {
+    margin: 0 0 10px;
+    color: #123f46;
+    font-size: clamp(27px, 4vw, 36px);
+    line-height: 1.25;
+    font-weight: 700;
+}
+
+.parent-welcome p {
+    margin: 0;
+    color: #536b6c;
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+/* Student information card */
+.parent-student-card {
+    padding: 30px;
+    background: #ffffff;
+    border: 1px solid #d8e5df;
+    border-top: 4px solid #c9ad79;
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(18, 63, 70, 0.09);
+}
+
+.parent-card-heading {
+    display: flex;
+    align-items: center;
+    gap: 17px;
+    margin-bottom: 25px;
+}
+
+.parent-student-avatar {
+    width: 64px;
+    height: 64px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    background: #e8f1ef;
+    border: 1px solid #d8e5df;
+    font-size: 31px;
+}
+
+.parent-card-heading h2 {
+    margin: 0 0 6px;
+    color: #123f46;
+    font-size: 24px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.parent-card-heading p {
+    margin: 0;
+    color: #536b6c;
+    font-size: 14px;
+}
+
+/* Summary information */
+.parent-summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.parent-summary-item {
+    padding: 19px 20px;
+    background: #f0f6f3;
+    border: 1px solid #d8e5df;
+    border-radius: 12px;
+    border-left: 4px solid #23636a;
+}
+
+.parent-summary-label {
+    display: block;
+    margin-bottom: 9px;
+    color: #536b6c;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.parent-summary-value {
+    display: block;
+    color: #123f46;
+    font-size: 23px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+/* Section headings */
+.parent-section-title {
+    margin: 0 0 7px;
+    color: #123f46;
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.parent-section-description {
+    margin: 0 0 20px;
+    color: #536b6c;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* Action cards */
+.parent-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.parent-action-link {
+    min-height: 100px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    border: 1px solid #d8e5df;
+    border-radius: 13px;
+    background: #ffffff;
+    color: #203438;
+    text-decoration: none;
+    transition: transform 0.2s ease,
+                box-shadow 0.2s ease,
+                border-color 0.2s ease;
+}
+
+.parent-action-link:hover {
+    transform: translateY(-2px);
+    border-color: #23636a;
+    box-shadow: 0 8px 20px rgba(18, 63, 70, 0.11);
+}
+
+.parent-action-content {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+}
+
+.parent-action-icon {
+    width: 45px;
+    height: 45px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 11px;
+    background: #e8f1ef;
+    font-size: 22px;
+}
+
+.parent-action-text strong {
+    display: block;
+    margin-bottom: 5px;
+    color: #123f46;
+    font-size: 15px;
+}
+
+.parent-action-text span {
+    display: block;
+    color: #536b6c;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.parent-action-arrow {
+    flex-shrink: 0;
+    font-size: 23px;
+    color: #23636a;
+}
+
+/* Responsible-use note */
+.parent-note {
+    margin-top: 23px;
+    padding: 16px 18px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    border: 1px solid #d8e5df;
+    border-left: 4px solid #c9ad79;
+    border-radius: 12px;
+    background: #f7f8f2;
+}
+
+.parent-note-icon {
+    font-size: 19px;
+}
+
+.parent-note p {
+    margin: 0;
+    color: #536b6c;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.parent-note strong {
+    color: #123f46;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 650px) {
+    .parent-navbar {
+        min-height: 65px;
+        padding: 12px 18px;
+    }
+
+    .parent-brand {
+        gap: 8px;
+        font-size: 20px;
+    }
+
+    .parent-brand-icon {
+        font-size: 27px;
+    }
+
+    .parent-logout {
+        padding: 9px 13px;
+    }
+
+    .parent-page {
+        padding: 28px 16px;
+    }
+
+    .parent-student-card {
+        padding: 21px;
+    }
+
+    .parent-summary,
+    .parent-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .parent-card-heading h2 {
+        font-size: 21px;
+    }
+
+    .parent-action-link {
+        min-height: 90px;
+    }
+}
+
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- =====================================
+         PARENT NAVIGATION
+    ====================================== -->
+
+    <nav class="parent-navbar">
+
+        <div class="parent-brand">
+            <span class="parent-brand-icon">🧠</span>
+            <span>Autism Monitor</span>
+        </div>
+
+        <a
+            class="parent-logout"
+            href="{{ url_for('logout') }}"
+        >
+            Logout
+        </a>
+
+    </nav>
+
+
+    <!-- =====================================
+         PARENT DASHBOARD CONTENT
+    ====================================== -->
+
+    <main class="parent-page">
+
+        <!-- Welcome message -->
+
+        <section class="parent-welcome">
+
+            <div class="parent-eyebrow">
+                Parent Portal
+            </div>
+
+            <h1>Welcome to Your Parent Portal</h1>
+
+            <p>
+                Stay connected with your child's learning journey
+                and explore their recorded progress.
+            </p>
+
+        </section>
+
+
+        <!-- Child information -->
+
+        <section class="parent-student-card">
+
+            <div class="parent-card-heading">
+
+                <div class="parent-student-avatar" aria-hidden="true">
+                    👤
+                </div>
+
+                <div>
+
+                    <h2>
+                        {{ student.get('student_name', student.get('name', 'Student')) }}
+                    </h2>
+
+                    <p>
+                        Your child's progress overview
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- Summary information -->
+
+            <div class="parent-summary">
+
+                <div class="parent-summary-item">
+
+                    <span class="parent-summary-label">
+                        Student Roll Number
+                    </span>
+
+                    <span class="parent-summary-value">
+                        {{ student_id }}
+                    </span>
+
+                </div>
+
+
+                <div class="parent-summary-item">
+
+                    <span class="parent-summary-label">
+                        Recorded Observations
+                    </span>
+
+                    <span class="parent-summary-value">
+                        {{ observation_count }}
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Parent actions -->
+
+            <h3 class="parent-section-title">
+                Your Child's Records
+            </h3>
+
+            <p class="parent-section-description">
+                Select a section below to review your child's
+                recorded progress and observation history.
+            </p>
+
+
+            <div class="parent-actions">
+
+                <a
+                    class="parent-action-link"
+                    href="{{ url_for('student_progress', student_id=student_id) }}"
+                >
+
+                    <div class="parent-action-content">
+
+                        <div class="parent-action-icon" aria-hidden="true">
+                            📈
+                        </div>
+
+                        <div class="parent-action-text">
+
+                            <strong>Student Progress</strong>
+
+                            <span>
+                                Review progress summaries and available charts.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <span class="parent-action-arrow" aria-hidden="true">
+                        ›
+                    </span>
+
+                </a>
+
+
+                <a
+                    class="parent-action-link"
+                    href="{{ url_for('observation_history', student_id=student_id) }}"
+                >
+
+                    <div class="parent-action-content">
+
+                        <div class="parent-action-icon" aria-hidden="true">
+                            📋
+                        </div>
+
+                        <div class="parent-action-text">
+
+                            <strong>Observation History</strong>
+
+                            <span>
+                                Review previously recorded observations.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <span class="parent-action-arrow" aria-hidden="true">
+                        ›
+                    </span>
+
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- Responsible-use note -->
+
+        <aside class="parent-note">
+
+            <span class="parent-note-icon" aria-hidden="true">
+                ℹ️
+            </span>
+
+            <p>
+                <strong>About this system:</strong>
+                Autism Monitor supports the monitoring of recorded
+                behavior and progress. It does not diagnose autism
+                or replace professional medical advice.
+            </p>
+
+        </aside>
+
+    </main>
+
+</body>
+
+</html>

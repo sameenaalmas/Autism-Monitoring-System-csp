@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Autism Monitor</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/landing.css') }}"
+    >
+</head>
+
+<body>
+
+    <main class="landing-page">
+
+        <div class="landing-content">
+
+            <!-- Brand -->
+            <div class="brand">
+                <div class="brand-icon">
+                    🧠
+                </div>
+
+                <span>Autism Monitor</span>
+            </div>
+
+
+            <!-- Main Content -->
+            <h1>
+                AI-Based Autism
+                <span>Behavior &amp; Progress</span>
+                Monitoring
+            </h1>
+
+
+            <p class="landing-description">
+                A digital platform for recording observations,
+                monitoring progress, and identifying unusual
+                behavioral patterns to support teachers and families.
+            </p>
+
+
+            <!-- Get Started -->
+            <a
+                href="{{ url_for('login') }}"
+                class="get-started-btn"
+            >
+                Get Started
+
+                <span class="arrow">→</span>
+            </a>
+
+        </div>
+
+
+        <!-- Footer -->
+        <div class="landing-footer">
+            Supporting meaningful progress monitoring through technology
+        </div>
+
+    </main>
+
+</body>
+</html>

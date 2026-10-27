@@ -1,0 +1,1029 @@
+/* =========================================
+   GLOBAL
+========================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    min-height: 100vh;
+    color: white;
+}
+
+
+/* =========================================
+   ONE CONTINUOUS LOGIN WINDOW
+   Classroom image covers EVERYTHING
+========================================= */
+
+.auth-page {
+    min-height: 100vh;
+    width: 100%;
+
+    display: flex;
+    position: relative;
+    overflow: hidden;
+
+    background-image:
+        linear-gradient(
+            90deg,
+            rgba(7, 47, 68, 0.25) 0%,
+            rgba(7, 47, 68, 0.12) 45%,
+            rgba(7, 47, 68, 0.30) 100%
+        ),
+        url("../images/login-bg.png");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+
+/* =========================================
+   LEFT SIDE
+   No separate background
+========================================= */
+
+.auth-welcome {
+    width: 45%;
+    min-height: 100vh;
+
+    position: relative;
+
+    display: flex;
+    align-items: flex-end;
+
+    padding: 55px;
+
+    color: white;
+
+    background: transparent;
+}
+
+
+/* =========================================
+   BACK TO HOME
+========================================= */
+
+.back-home {
+    position: absolute;
+
+    top: 30px;
+    left: 35px;
+
+    color: white;
+    text-decoration: none;
+
+    font-size: 15px;
+    font-weight: 500;
+
+    padding: 9px 15px;
+
+    border-radius: 10px;
+
+    background: rgba(0, 0, 0, 0.16);
+
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+
+    transition: 0.25s ease;
+}
+
+.back-home:hover {
+    background: rgba(0, 0, 0, 0.28);
+
+    transform: translateX(-2px);
+}
+
+
+/* =========================================
+   WELCOME CONTENT
+========================================= */
+
+.welcome-content {
+    max-width: 430px;
+
+    position: relative;
+    z-index: 2;
+}
+
+
+/* Hide brain icon completely */
+
+.welcome-icon {
+    display: none;
+}
+
+
+/* Autism Monitor heading */
+
+.welcome-content h1 {
+    font-size: 42px;
+
+    line-height: 1.1;
+
+    margin-bottom: 15px;
+
+    font-weight: 700;
+
+    letter-spacing: -0.5px;
+
+    color: white;
+}
+
+
+/* Description */
+
+.welcome-content p {
+    font-size: 17px;
+
+    line-height: 1.7;
+
+    color: rgba(255, 255, 255, 0.92);
+
+    max-width: 390px;
+}
+
+
+/* =========================================
+   RIGHT SIDE
+   COMPLETELY TRANSPARENT
+========================================= */
+
+.auth-panel {
+    width: 55%;
+    min-height: 100vh;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 45px;
+
+    position: relative;
+
+    background: transparent;
+
+    /*
+       IMPORTANT:
+       No white background.
+       No separate glass partition.
+    */
+
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+
+/* =========================================
+   FLOATING LOGIN BOX
+========================================= */
+
+.auth-container {
+    width: 100%;
+    max-width: 560px;
+
+    padding: 42px 45px;
+
+    /*
+       Very transparent glass
+    */
+
+    background: rgba(255, 255, 255, 0.055);
+
+    border: 1px solid rgba(255, 255, 255, 0.24);
+
+    border-radius: 24px;
+
+    /*
+       This is the ONLY glass layer.
+    */
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    box-shadow:
+        0 20px 55px rgba(0, 30, 45, 0.16),
+        inset 0 1px 1px rgba(255, 255, 255, 0.18);
+
+    position: relative;
+
+    z-index: 5;
+}
+
+
+/* =========================================
+   HEADING
+========================================= */
+
+.auth-heading {
+    margin-bottom: 27px;
+}
+
+
+/* WELCOME BACK */
+
+.small-label {
+    display: block;
+
+    color: rgba(255, 255, 255, 0.82);
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.5px;
+
+    margin-bottom: 8px;
+}
+
+
+/* Sign in to continue */
+
+.auth-heading h2 {
+    font-size: 30px;
+
+    line-height: 1.2;
+
+    color: white;
+
+    margin-bottom: 9px;
+}
+
+
+/* Description */
+
+.auth-heading p {
+    font-size: 14px;
+
+    color: rgba(255, 255, 255, 0.78);
+}
+
+
+/* =========================================
+   ROLE SECTION
+========================================= */
+
+.role-section {
+    margin-bottom: 24px;
+}
+
+
+/* Continue as */
+
+.field-label {
+    display: block;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    color: rgba(255, 255, 255, 0.90);
+
+    margin-bottom: 10px;
+}
+
+
+/* Teacher / Parent layout */
+
+.role-options {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 12px;
+}
+
+
+/* =========================================
+   TEACHER / PARENT CARDS
+========================================= */
+
+.role-card {
+    border: 1px solid rgba(255, 255, 255, 0.28);
+
+    background: rgba(255, 255, 255, 0.07);
+
+    border-radius: 14px;
+
+    padding: 15px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    color: white;
+
+    transition: all 0.25s ease;
+
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+
+/* Hover */
+
+.role-card:hover {
+    border-color: rgba(255, 255, 255, 0.55);
+
+    background: rgba(255, 255, 255, 0.11);
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 7px 20px rgba(0, 30, 45, 0.10);
+}
+
+
+/* Selected role */
+
+.role-card.active {
+    border: 1px solid rgba(255, 255, 255, 0.70);
+
+    background: rgba(255, 255, 255, 0.16);
+
+    box-shadow:
+        0 7px 20px rgba(0, 30, 45, 0.12);
+}
+
+
+/* Role icon */
+
+.role-icon {
+    width: 42px;
+    height: 42px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    background: rgba(255, 255, 255, 0.12);
+
+    font-size: 21px;
+}
+
+
+/* Role title */
+
+.role-card strong {
+    display: block;
+
+    font-size: 14px;
+
+    margin-bottom: 3px;
+
+    color: white;
+}
+
+
+/* Role description */
+
+.role-card small {
+    display: block;
+
+    font-size: 11px;
+
+    color: rgba(255, 255, 255, 0.72);
+}
+
+
+/* =========================================
+   FORM
+========================================= */
+
+.login-form {
+    width: 100%;
+}
+
+
+/* Each field */
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+
+/* Labels */
+
+.form-group label {
+    display: block;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    color: rgba(255, 255, 255, 0.92);
+
+    margin-bottom: 8px;
+}
+
+
+/* =========================================
+   TRANSPARENT INPUT FIELDS
+========================================= */
+
+.form-group input {
+    width: 100%;
+
+    height: 49px;
+
+    border: 1px solid rgba(255, 255, 255, 0.38);
+
+    border-radius: 11px;
+
+    padding: 0 15px;
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    color: white;
+
+    /*
+       Transparent input
+    */
+
+    background: rgba(255, 255, 255, 0.07);
+
+    outline: none;
+
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+
+    transition: 0.25s ease;
+}
+
+
+/* Placeholder */
+
+.form-group input::placeholder {
+    color: rgba(255, 255, 255, 0.70);
+}
+
+
+/* When user clicks input */
+
+.form-group input:focus {
+    border-color: rgba(255, 255, 255, 0.75);
+
+    background: rgba(255, 255, 255, 0.12);
+
+    box-shadow:
+        0 0 0 3px rgba(255, 255, 255, 0.08);
+}
+
+
+/* =========================================
+   PASSWORD LABEL
+========================================= */
+
+.password-label {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: 8px;
+}
+
+
+.password-label label {
+    margin-bottom: 0;
+}
+
+
+/* Forgot password */
+
+.password-label a {
+    font-size: 12px;
+
+    color: rgba(255, 255, 255, 0.85);
+
+    text-decoration: none;
+
+    font-weight: 500;
+}
+
+.password-label a:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================================
+   REMEMBER ME
+========================================= */
+
+.remember-row {
+    margin-top: -3px;
+
+    margin-bottom: 22px;
+}
+
+
+.remember-option {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    font-size: 13px;
+
+    color: rgba(255, 255, 255, 0.82);
+
+    cursor: pointer;
+}
+
+
+.remember-option input {
+    width: 16px;
+    height: 16px;
+
+    accent-color: #5bb7d0;
+
+    cursor: pointer;
+}
+
+
+/* =========================================
+   SIGN IN BUTTON
+========================================= */
+
+.login-btn {
+    width: 100%;
+
+    height: 50px;
+
+    border: none;
+
+    border-radius: 11px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2188a7,
+            #257b9a
+        );
+
+    color: white;
+
+    font-family: inherit;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    box-shadow:
+        0 8px 18px rgba(33, 128, 157, 0.22);
+
+    transition: 0.25s ease;
+}
+
+
+/* Arrow */
+
+.login-btn span {
+    font-size: 19px;
+
+    transition: 0.25s ease;
+}
+
+
+/* Hover */
+
+.login-btn:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 12px 24px rgba(33, 128, 157, 0.30);
+}
+
+
+/* Arrow movement */
+
+.login-btn:hover span {
+    transform: translateX(4px);
+}
+
+
+/* Click */
+
+.login-btn:active {
+    transform: translateY(0);
+}
+
+
+/* =========================================
+   SIGN UP
+========================================= */
+
+.signup-section {
+    margin-top: 22px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 5px;
+
+    font-size: 13px;
+
+    color: rgba(255, 255, 255, 0.75);
+}
+
+
+.signup-section a {
+    color: rgba(255, 255, 255, 0.95);
+
+    text-decoration: none;
+
+    font-weight: 600;
+}
+
+
+.signup-section a:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================================
+   LOGIN MESSAGE
+========================================= */
+
+.login-message {
+    display: none;
+
+    margin-top: 18px;
+
+    padding: 12px 15px;
+
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.10);
+
+    border: 1px solid rgba(255, 255, 255, 0.25);
+
+    color: white;
+
+    font-size: 12px;
+
+    line-height: 1.5;
+
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+
+.login-message.show {
+    display: block;
+}
+
+
+/* =========================================
+   RESPONSIVE - TABLET
+========================================= */
+
+@media (max-width: 1000px) {
+
+    .auth-welcome {
+        width: 40%;
+
+        padding: 35px;
+    }
+
+    .auth-panel {
+        width: 60%;
+
+        padding: 30px;
+    }
+
+    .auth-container {
+        padding: 35px;
+    }
+
+    .welcome-content h1 {
+        font-size: 34px;
+    }
+}
+
+
+/* =========================================
+   RESPONSIVE - MOBILE
+========================================= */
+
+@media (max-width: 760px) {
+
+    .auth-page {
+        flex-direction: column;
+
+        overflow: auto;
+
+        background-position: center;
+    }
+
+
+    .auth-welcome {
+        width: 100%;
+
+        min-height: 330px;
+
+        padding: 35px;
+
+        align-items: flex-end;
+    }
+
+
+    .auth-panel {
+        width: 100%;
+
+        min-height: auto;
+
+        padding: 35px 20px;
+
+        background: transparent;
+    }
+
+
+    .auth-container {
+        max-width: 600px;
+
+        padding: 35px;
+    }
+
+
+    .welcome-content h1 {
+        font-size: 32px;
+    }
+
+
+    .welcome-content p {
+        font-size: 15px;
+    }
+}
+
+
+/* =========================================
+   SMALL MOBILE
+========================================= */
+
+@media (max-width: 500px) {
+
+    .auth-welcome {
+        min-height: 300px;
+
+        padding: 25px;
+    }
+
+
+    .back-home {
+        top: 18px;
+
+        left: 20px;
+    }
+
+
+    .welcome-content h1 {
+        font-size: 28px;
+    }
+
+
+    .welcome-content p {
+        font-size: 14px;
+    }
+
+
+    .auth-panel {
+        padding: 25px 15px;
+    }
+
+
+    .auth-container {
+        padding: 28px 22px;
+
+        border-radius: 18px;
+    }
+
+
+    .auth-heading h2 {
+        font-size: 26px;
+    }
+
+
+    .role-options {
+        grid-template-columns: 1fr;
+    }
+}
+
+.signup-success {
+    background: #dcfce7;
+    color: #166534;
+    padding: 12px 15px;
+    margin-bottom: 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+
+.signup-success {
+    animation: hideSuccess 0.5s ease 4.5s forwards;
+}
+
+@keyframes hideSuccess {
+    to {
+        opacity: 0;
+        visibility: hidden;
+        height: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+        margin: 0;
+        overflow: hidden;
+    }
+}
+
+
+/* =========================================
+   FORGOT PASSWORD AND RESET PASSWORD PAGES
+   Separate styling; preserves existing login
+========================================= */
+
+.password-page {
+    align-items: center;
+    justify-content: center;
+    padding: 35px 20px;
+    background-position: center;
+}
+
+.password-page .auth-panel {
+    width: 100%;
+    min-height: auto;
+    padding: 0;
+}
+
+.password-container {
+    max-width: 490px;
+    padding: 42px;
+}
+
+.password-container .auth-heading {
+    margin-bottom: 22px;
+}
+
+.password-container .auth-heading h2 {
+    font-size: 29px;
+}
+
+.password-description {
+    color: rgba(255, 255, 255, 0.86);
+    font-size: 14px;
+    line-height: 1.8;
+    margin-bottom: 24px;
+}
+
+.password-container .form-group {
+    margin-bottom: 22px;
+}
+
+.password-container .form-group input {
+    height: 51px;
+}
+
+.password-container .login-btn {
+    margin-top: 5px;
+}
+
+.password-container .signup-section {
+    margin-top: 25px;
+}
+
+.password-container .signup-section a {
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.password-message {
+    padding: 12px 14px;
+    border-radius: 10px;
+    margin-bottom: 18px;
+    font-size: 13px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+.password-message.success {
+    background: rgba(220, 252, 231, 0.15);
+    border: 1px solid rgba(187, 247, 208, 0.45);
+    color: #e0ffe9;
+}
+
+.password-message.error {
+    background: rgba(254, 226, 226, 0.14);
+    border: 1px solid rgba(254, 202, 202, 0.45);
+    color: #fff0f0;
+}
+
+@media (max-width: 600px) {
+    .password-page {
+        padding: 20px 14px;
+    }
+
+    .password-container {
+        padding: 30px 23px;
+        border-radius: 20px;
+    }
+
+    .password-container .auth-heading h2 {
+        font-size: 25px;
+    }
+}
+
+
+
+/* Password field with show/hide eye icon */
+.password-input-wrap {
+    position: relative;
+    width: 100%;
+}
+
+.password-input-wrap input {
+    width: 100%;
+    padding-right: 48px;
+}
+
+
+/* Clearly visible password eye button */
+
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    color: #ffffff;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.password-toggle:hover {
+    color: #ffffff;
+    background: transparent;
+}
+
+.password-toggle:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+}
+
+.password-toggle svg {
+    display: block;
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+}
+
+
+
+.password-toggle:hover {
+    color: #7565b5;
+}
+
+.password-toggle:focus-visible {
+    outline: 2px solid #9382d0;
+    outline-offset: 2px;
+}
+
+

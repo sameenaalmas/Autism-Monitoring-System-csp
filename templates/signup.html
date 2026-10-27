@@ -1,0 +1,249 @@
+ 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account | Autism Monitor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+    <style>
+        
+
+
+
+/* Page background */
+body {
+    background: linear-gradient(
+        135deg,
+        #e8f1ef 0%,
+        #f5f8f6 50%,
+        #e0ece9 100%
+    );
+    min-height: 100vh;
+    padding: 1px 0;
+}
+
+/* Signup card */
+.signup-card {
+    width: min(460px, 92%);
+    margin: 35px auto;
+    padding: 30px;
+    border-radius: 18px;
+    background: #ffffff;
+    color: #203438;
+    border: 1px solid #d8e5df;
+    box-shadow: 0 12px 35px rgba(18, 63, 70, 0.14);
+}
+
+/* Heading */
+.signup-card h1 {
+    margin: 0 0 8px;
+    font-size: 26px;
+    color: #123f46;
+}
+
+/* Description text */
+.signup-card p {
+    color: #627777;
+    margin-bottom: 22px;
+}
+
+/* Form labels */
+.signup-card label {
+    display: block;
+    margin: 14px 0 6px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #29494c;
+}
+
+/* Input fields and dropdown */
+.signup-card input,
+.signup-card select {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbdcd7;
+    border-radius: 9px;
+    background: #ffffff;
+    color: #203438;
+    font-size: 15px;
+}
+
+/* Input focus */
+.signup-card input:focus,
+.signup-card select:focus {
+    outline: none;
+    border-color: #23636a;
+    box-shadow: 0 0 0 3px rgba(35, 99, 106, 0.13);
+}
+
+/* Create Account button */
+.signup-card button {
+    width: 100%;
+    margin-top: 22px;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(
+        135deg,
+        #23636a,
+        #123f46
+    );
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    box-shadow: 0 5px 12px rgba(18, 63, 70, 0.20);
+    transition: background 0.2s ease,
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+}
+
+/* Button hover */
+.signup-card button:hover {
+    background: linear-gradient(
+        135deg,
+        #2d7378,
+        #194e54
+    );
+    box-shadow: 0 7px 16px rgba(18, 63, 70, 0.25);
+    transform: translateY(-1px);
+}
+
+/* Error message */
+.signup-error {
+    padding: 11px;
+    border-radius: 8px;
+    color: #991b1b;
+    background: #fee2e2;
+    margin-bottom: 14px;
+}
+
+/* Footer */
+.signup-footer {
+    text-align: center;
+    margin-top: 20px;
+    color: #536b6c;
+}
+
+/* Footer links */
+.signup-footer a {
+    color: #23636a;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.signup-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Helpful note text */
+.signup-note {
+    font-size: 12px;
+    line-height: 1.5;
+    color: #627777;
+}
+
+/* Champagne accent for the card border */
+.signup-card {
+    border-top: 4px solid #c9ad79;
+}
+
+
+    </style>
+</head>
+<body>
+    <main class="signup-card">
+        <h1>Create your account</h1>
+        <p>Join Autism Monitor to support student progress monitoring.</p>
+
+        {% if error %}
+            <div class="signup-error" role="alert">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('signup') }}">
+            <label for="role">Account type</label>
+            <select id="role" name="role" required>
+                <option value="teacher">Teacher</option>
+                <option value="parent">Parent</option>
+            </select>
+
+            <label for="name">Full name</label>
+            <input id="name" name="name" type="text"
+                   autocomplete="name" maxlength="100" required>
+
+            <label for="email">Email address</label>
+            <input id="email" name="email" type="email"
+                   autocomplete="email" maxlength="254" required>
+
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password"
+                   autocomplete="new-password" minlength="8"
+                   required>
+            <p class="signup-note">Use at least 8 characters.</p>
+
+            <div id="teacher-fields">
+                <label for="teacher_code">Teacher registration code</label>
+                <input id="teacher_code" name="teacher_code"
+                       type="password" autocomplete="off">
+            </div>
+
+            <div id="parent-fields" hidden>
+                <label for="child_name">Child's full name</label>
+                <input id="child_name" name="child_name"
+                       type="text" maxlength="100" disabled>
+
+                <label for="student_id">Child's roll number</label>
+                <input id="student_id" name="student_id"
+                       type="text" maxlength="50" disabled>
+
+                <p class="signup-note">
+                    Enter the name and roll number exactly as recorded
+                    by the teacher. This is a demonstration linking method,
+                    not strong identity verification for real-world deployment.
+                </p>
+            </div>
+
+            <button type="submit">Create Account</button>
+        </form>
+
+        <div class="signup-footer">
+            Already have an account?
+            <a href="{{ url_for('login') }}">Log In</a>
+            <br><br>
+            <a href="{{ url_for('login') }}">Back to Login</a>
+        </div>
+    </main>
+
+    <script>
+        const roleSelect = document.getElementById("role");
+        const teacherFields = document.getElementById("teacher-fields");
+        const parentFields = document.getElementById("parent-fields");
+
+        const teacherCode = document.getElementById("teacher_code");
+        const childName = document.getElementById("child_name");
+        const studentId = document.getElementById("student_id");
+
+        function updateRoleFields() {
+            const isParent = roleSelect.value === "parent";
+
+            teacherFields.hidden = isParent;
+            parentFields.hidden = !isParent;
+
+            teacherCode.disabled = isParent;
+            teacherCode.required = !isParent;
+
+            childName.disabled = !isParent;
+            childName.required = isParent;
+
+            studentId.disabled = !isParent;
+            studentId.required = isParent;
+        }
+
+        roleSelect.addEventListener("change", updateRoleFields);
+        updateRoleFields();
+    </script>
+</body>
+</html>

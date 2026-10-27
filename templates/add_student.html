@@ -1,0 +1,79 @@
+ 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Student - Autism Monitor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">🧠 Autism Monitor</div>
+        <div class="nav-links">
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('students') }}" class="active">Students</a>
+            <a href="{{ url_for('add_observation') }}">Add Observation</a>
+            <a href="{{ url_for('logout') }}" class="logout-link">Logout</a>
+        </div>
+    </nav>
+
+    <main class="students-container">
+        <div class="students-heading">
+            <div>
+                <h1>Add Student</h1>
+                <p>Register a student before recording observations.</p>
+            </div>
+        </div>
+
+        <div class="students-card" style="max-width: 600px; margin: 24px auto; padding: 28px;">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <p class="toast-message {{ category }}">{{ message }}</p>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('add_student') }}">
+                <div style="margin-bottom: 20px;">
+                    <label for="student_id">Student ID</label>
+                    <input
+                        type="text"
+                        id="student_id"
+                        name="student_id"
+                        placeholder="e.g. ST004"
+                        required
+                        maxlength="50"
+                        style="display:block; width:100%; padding:12px; margin-top:8px;"
+                    >
+                </div>
+
+                <div style="margin-bottom: 24px;">
+                    <label for="student_name">Student Name</label>
+                    <input
+                        type="text"
+                        id="student_name"
+                        name="student_name"
+                        placeholder="Enter student's name"
+                        required
+                        maxlength="100"
+                        style="display:block; width:100%; padding:12px; margin-top:8px;"
+                    >
+                </div>
+
+                <button type="submit" class="add-student-btn">
+                    Save Student
+                </button>
+
+                <a href="{{ url_for('students') }}" class="view-history-btn"
+                   style="display:inline-block; margin-left:10px;">
+                    Cancel
+                </a>
+            </form>
+        </div>
+    </main>
+
+</body>
+</html>

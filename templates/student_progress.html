@@ -1,0 +1,1293 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ student_name }} - Progress</title>
+
+    <!-- Load saved theme before the page renders -->
+    <script>
+        (function () {
+            try {
+                document.documentElement.dataset.theme =
+                    localStorage.getItem("autism-monitor-theme") === "dark"
+                        ? "dark"
+                        : "light";
+            } catch (error) {
+                document.documentElement.dataset.theme = "light";
+            }
+        })();
+    </script>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        
+/* ==========================================
+   STUDENT PROGRESS — SOFT TEAL + BLUE THEME
+   Light and dark modes
+   ========================================== */
+
+html[data-theme="light"] {
+    --sp-bg: #edf6f7;
+    --sp-panel: #ffffff;
+    --sp-text: #243746;
+    --sp-muted: #607987;
+    --sp-border: #d4e6e9;
+    --sp-table-head: #dceff1;
+    --sp-table-hover: #edf8f9;
+    --sp-link: #147d8a;
+    --sp-input: #ffffff;
+    --sp-grid: #d7e7eb;
+    --sp-accent: #73bdc5;
+    --sp-accent-soft: #e2f3f4;
+    --sp-shadow: rgba(39, 113, 126, 0.09);
+}
+
+html[data-theme="dark"] {
+    --sp-bg: #14252f;
+    --sp-panel: #203640;
+    --sp-text: #e7f1f5;
+    --sp-muted: #b3c9d2;
+    --sp-border: #3c5965;
+    --sp-table-head: #2b4854;
+    --sp-table-hover: #294650;
+    --sp-link: #8dd9e0;
+    --sp-input: #1b303a;
+    --sp-grid: #405b67;
+    --sp-accent: #62b8c3;
+    --sp-accent-soft: #294650;
+    --sp-shadow: rgba(0, 0, 0, 0.15);
+}
+
+/* PAGE BACKGROUND AND TEXT */
+
+html[data-theme] body {
+    background: var(--sp-bg) !important;
+    color: var(--sp-text) !important;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+html[data-theme] .container {
+    color: var(--sp-text);
+}
+
+html[data-theme] .section-title,
+html[data-theme] .container h1,
+html[data-theme] .container h2,
+html[data-theme] .container h3 {
+    color: var(--sp-text);
+}
+
+/* NAVIGATION */
+
+html[data-theme="light"] nav {
+    background: #ffffff !important;
+    color: #243746 !important;
+    border-bottom: 1px solid var(--sp-border);
+    box-shadow: 0 3px 14px var(--sp-shadow);
+}
+
+html[data-theme="dark"] nav {
+    background: #1b303a !important;
+    color: var(--sp-text) !important;
+    border-bottom: 1px solid var(--sp-border);
+}
+
+html[data-theme] nav a {
+    color: var(--sp-text) !important;
+}
+
+html[data-theme] nav a:hover,
+html[data-theme] .back-link a:hover {
+    color: var(--sp-link) !important;
+}
+
+html[data-theme] .back-link a {
+    color: var(--sp-link) !important;
+}
+
+/* THEME TOGGLE */
+
+.theme-toggle {
+    padding: 9px 12px;
+    border: 1px solid var(--sp-border);
+    border-radius: 9px;
+    background: var(--sp-panel);
+    color: var(--sp-text);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.theme-toggle:hover {
+    background: var(--sp-accent-soft);
+}
+
+/* STUDENT PROFILE */
+
+html[data-theme] .profile-header {
+    background: var(--sp-panel) !important;
+    color: var(--sp-text) !important;
+    border: 1px solid var(--sp-border) !important;
+    border-left: 4px solid var(--sp-accent) !important;
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 5px 18px var(--sp-shadow);
+}
+
+html[data-theme] .student-profile-details,
+html[data-theme] .student-profile-details h1,
+html[data-theme] .student-profile-details p,
+html[data-theme] .student-profile-details strong {
+    color: var(--sp-text) !important;
+    opacity: 1;
+}
+
+.student-photo-wrapper {
+    position: relative;
+}
+
+html[data-theme] .student-photo-trigger {
+    background: var(--sp-panel) !important;
+    color: var(--sp-text) !important;
+    border: 1px solid var(--sp-border) !important;
+    border-radius: 10px;
+}
+
+html[data-theme] .student-photo-trigger:hover,
+html[data-theme] .theme-toggle:hover {
+    border-color: var(--sp-accent) !important;
+}
+
+html[data-theme] .photo-options-menu {
+    background: var(--sp-panel) !important;
+    color: var(--sp-text) !important;
+    border: 1px solid var(--sp-border) !important;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px var(--sp-shadow);
+    z-index: 20;
+}
+
+html[data-theme] .photo-menu-item {
+    display: block;
+    width: 100%;
+    padding: 11px 14px;
+    border: none;
+    background: transparent;
+    color: var(--sp-text);
+    text-align: left;
+    cursor: pointer;
+}
+
+html[data-theme] .photo-menu-item:hover {
+    background: var(--sp-table-hover);
+}
+
+.remove-photo-item {
+    color: #dc5555 !important;
+}
+
+/* PROGRESS OVERVIEW CARDS */
+
+html[data-theme] .progress-card {
+    background: var(--sp-panel) !important;
+    color: var(--sp-text) !important;
+    border: 1px solid var(--sp-border) !important;
+    border-top: 3px solid var(--sp-accent) !important;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px var(--sp-shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+html[data-theme] .progress-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 7px 18px var(--sp-shadow);
+}
+
+html[data-theme] .progress-card span {
+    color: var(--sp-muted) !important;
+}
+
+html[data-theme="light"] .progress-card strong {
+    color: #147d8a !important;
+}
+
+html[data-theme="dark"] .progress-card strong {
+    color: #8dd9e0 !important;
+}
+
+/* OBSERVATION COUNT */
+
+html[data-theme] .info-box {
+    background: var(--sp-accent-soft) !important;
+    color: var(--sp-text) !important;
+    border: 1px solid var(--sp-border) !important;
+    border-left: 4px solid var(--sp-accent) !important;
+    border-radius: 10px;
+}
+
+html[data-theme="light"] .info-box strong {
+    color: #147d8a !important;
+}
+
+html[data-theme="dark"] .info-box strong {
+    color: #8dd9e0 !important;
+}
+
+/* AI PANELS */
+
+html[data-theme] .ai-status-box,
+html[data-theme] .anomaly-changes-box,
+html[data-theme] .ai-summary-box,
+html[data-theme] .ai-trend-box,
+html[data-theme] .ai-insights-box {
+    background: var(--sp-panel) !important;
+    color: var(--sp-text) !important;
+    border: 1px solid var(--sp-border) !important;
+    border-top: 3px solid var(--sp-accent) !important;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px var(--sp-shadow);
+}
+
+html[data-theme] .ai-status-box p,
+html[data-theme] .anomaly-changes-box p,
+html[data-theme] .ai-summary-box p,
+html[data-theme] .ai-trend-box p,
+html[data-theme] .ai-insights-box p,
+html[data-theme] .summary-note,
+html[data-theme] .trend-note,
+html[data-theme] .insights-note,
+html[data-theme] .monitoring-suggestion {
+    color: var(--sp-text);
+}
+
+/* AI EXPLANATIONS AND NOTES */
+
+html[data-theme] .summary-note,
+html[data-theme] .trend-note,
+html[data-theme] .insights-note,
+html[data-theme] .monitoring-suggestion {
+    background: var(--sp-accent-soft) !important;
+    border-color: var(--sp-border) !important;
+    border-radius: 9px;
+    padding: 12px;
+}
+
+html[data-theme] .monitoring-suggestion {
+    border-left: 4px solid var(--sp-accent) !important;
+}
+
+html[data-theme="dark"] .trend-card-top strong,
+html[data-theme="dark"] .insight-top strong,
+html[data-theme="dark"] .change-name strong {
+    color: #e7f1f5 !important;
+}
+
+/* AI STATUS INDICATORS */
+
+html[data-theme="light"] .status-neutral {
+    color: #236c9a;
+}
+
+html[data-theme="light"] .status-warning {
+    color: #9a6500;
+}
+
+html[data-theme="light"] .status-normal {
+    color: #18734b;
+}
+
+html[data-theme="dark"] .status-neutral {
+    color: #a9d9ff;
+}
+
+html[data-theme="dark"] .status-warning {
+    color: #ffdc8a;
+}
+
+html[data-theme="dark"] .status-normal {
+    color: #9ce6c1;
+}
+
+/* INCREASED / DECREASED INDICATORS */
+
+html[data-theme] .change-up,
+html[data-theme] .change-down {
+    display: inline-block;
+    font-weight: 800 !important;
+    opacity: 1 !important;
+    padding: 5px 9px;
+    border-radius: 6px;
+    white-space: nowrap;
+}
+
+html[data-theme="light"] .change-up {
+    color: #a62929 !important;
+    background: #fde7e7 !important;
+}
+
+html[data-theme="light"] .change-down {
+    color: #176747 !important;
+    background: #ddf5e8 !important;
+}
+
+html[data-theme="dark"] .change-up {
+    color: #ffc3c3 !important;
+    background: #652f37 !important;
+}
+
+html[data-theme="dark"] .change-down {
+    color: #b8f0d1 !important;
+    background: #205342 !important;
+}
+
+/* TREND CARDS */
+
+html[data-theme] .trend-card,
+html[data-theme] .insight-card,
+html[data-theme] .change-item {
+    background: var(--sp-accent-soft) !important;
+    color: var(--sp-text) !important;
+    border-color: var(--sp-border) !important;
+    border-radius: 10px;
+}
+
+html[data-theme] .trend-values,
+html[data-theme] .change-values,
+html[data-theme] .change-values span {
+    color: var(--sp-text);
+}
+
+html[data-theme="dark"] .trend-increasing {
+    color: #ffaaaa;
+}
+
+html[data-theme="dark"] .trend-decreasing {
+    color: #a7edc2;
+}
+
+html[data-theme="dark"] .trend-stable {
+    color: #a9d9ff;
+}
+
+html[data-theme="dark"] .change-up {
+    color: #ffc3c3;
+}
+
+html[data-theme="dark"] .change-down {
+    color: #b8f0d1;
+}
+
+/* CHART */
+
+html[data-theme] .chart-container {
+    background: var(--sp-panel) !important;
+    color: var(--sp-text) !important;
+    border: 1px solid var(--sp-border) !important;
+    border-radius: 12px;
+    padding: 20px;
+    overflow-x: auto;
+    box-shadow: 0 4px 14px var(--sp-shadow);
+}
+
+#progressChart {
+    max-width: 100%;
+}
+
+/* RECENT OBSERVATIONS TABLE */
+
+html[data-theme] .table-container {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    background: var(--sp-panel) !important;
+    border: 1px solid var(--sp-border) !important;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px var(--sp-shadow);
+}
+
+html[data-theme] .table-container table {
+    width: 100%;
+    min-width: 650px;
+    border-collapse: collapse;
+    color: var(--sp-text);
+}
+
+html[data-theme] .table-container th {
+    background: var(--sp-table-head) !important;
+    color: var(--sp-text) !important;
+    border-color: var(--sp-border) !important;
+    padding: 13px;
+    white-space: nowrap;
+}
+
+html[data-theme] .table-container td {
+    background: var(--sp-panel) !important;
+    color: var(--sp-text) !important;
+    border-color: var(--sp-border) !important;
+    padding: 13px;
+    overflow-wrap: anywhere;
+}
+
+html[data-theme] .table-container tbody tr:hover td {
+    background: var(--sp-table-hover) !important;
+}
+
+/* MOBILE LAYOUT */
+
+@media (max-width: 700px) {
+    html[data-theme] .container {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    html[data-theme] .table-container table {
+        min-width: 650px;
+    }
+
+    .theme-toggle {
+        margin: 4px 0;
+    }
+
+    html[data-theme] .profile-header {
+        padding: 14px;
+    }
+
+    html[data-theme] .chart-container {
+        padding: 12px;
+    }
+}
+
+        
+    </style>
+</head>
+
+<body>
+
+<!-- NAVIGATION BAR -->
+<nav>
+    <div class="brand">🧠 Autism Monitor</div>
+
+    {% if session.get('user_role') == 'teacher' %}
+    <div class="nav-links">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('students') }}">Students</a>
+        <a href="{{ url_for('add_observation') }}">Add Observation</a>
+
+        <button type="button" id="themeToggle" class="theme-toggle">
+            🌙 Dark Mode
+        </button>
+
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+    {% endif %}
+</nav>
+
+<!-- BACK LINK -->
+<div class="back-link">
+    {% if session.get('user_role') == 'parent' %}
+        <a href="{{ url_for('parent_dashboard') }}">
+            ← Back to Parent Portal
+        </a>
+    {% elif session.get('user_role') == 'teacher' %}
+        <a href="{{ url_for('students') }}">
+            ← Back to Students
+        </a>
+    {% endif %}
+</div>
+
+<main class="container">
+
+    <!-- STUDENT PROFILE -->
+    <div class="profile-header">
+
+        <div class="student-photo-wrapper">
+
+            {% if session.get('user_role') == 'teacher' %}
+
+                <button
+                    type="button"
+                    class="student-photo-trigger"
+                    onclick="togglePhotoMenu()"
+                    aria-label="Manage student photo"
+                    aria-expanded="false"
+                    id="student-photo-trigger">
+
+                    {% if student_photo %}
+                        <img
+                            src="{{ url_for('static', filename=student_photo) }}"
+                            alt="{{ student_name }}'s profile photo"
+                            class="student-profile-photo">
+                    {% else %}
+                        <span class="student-icon large">👤</span>
+                    {% endif %}
+
+                    <span class="photo-camera-badge">📷</span>
+                </button>
+
+                <div class="photo-options-menu"
+                     id="photo-options-menu"
+                     hidden>
+
+                    <button
+                        type="button"
+                        class="photo-menu-item"
+                        onclick="document.getElementById('student-photo-input').click()">
+                        📷 {% if student_photo %}Change Photo{% else %}Upload Photo{% endif %}
+                    </button>
+
+                    {% if student_photo %}
+                    <form
+                        method="POST"
+                        action="{{ url_for('remove_student_photo', student_id=student_id) }}"
+                        onsubmit="return confirm('Are you sure you want to remove this photo?');">
+
+                        <button
+                            type="submit"
+                            class="photo-menu-item remove-photo-item">
+                            🗑️ Remove Photo
+                        </button>
+                    </form>
+                    {% endif %}
+
+                </div>
+
+                <form
+                    id="student-photo-form"
+                    method="POST"
+                    action="{{ url_for('upload_student_photo', student_id=student_id) }}"
+                    enctype="multipart/form-data">
+
+                    <input
+                        type="file"
+                        id="student-photo-input"
+                        name="student_photo"
+                        accept="image/png,image/jpeg,image/webp"
+                        hidden>
+                </form>
+
+            {% else %}
+
+                <div class="student-photo-trigger"
+                     aria-label="Student profile photo">
+
+                    {% if student_photo %}
+                        <img
+                            src="{{ url_for('static', filename=student_photo) }}"
+                            alt="{{ student_name }}'s profile photo"
+                            class="student-profile-photo">
+                    {% else %}
+                        <span class="student-icon large">👤</span>
+                    {% endif %}
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+        <div class="student-profile-details">
+            <h1>{{ student_name }}</h1>
+            <p>
+                Student ID:
+                <strong>{{ student_id }}</strong>
+            </p>
+        </div>
+
+    </div>
+
+    <!-- TEACHER PHOTO JAVASCRIPT -->
+    {% if session.get('user_role') == 'teacher' %}
+    <script>
+        function togglePhotoMenu() {
+            const menu = document.getElementById("photo-options-menu");
+            const trigger = document.getElementById("student-photo-trigger");
+
+            if (!menu || !trigger) return;
+
+            menu.hidden = !menu.hidden;
+            trigger.setAttribute("aria-expanded", String(!menu.hidden));
+        }
+
+        document.addEventListener("click", function (event) {
+            const wrapper = document.querySelector(".student-photo-wrapper");
+            const menu = document.getElementById("photo-options-menu");
+            const trigger = document.getElementById("student-photo-trigger");
+
+            if (
+                wrapper &&
+                menu &&
+                trigger &&
+                !wrapper.contains(event.target)
+            ) {
+                menu.hidden = true;
+                trigger.setAttribute("aria-expanded", "false");
+            }
+        });
+
+        const photoInput = document.getElementById("student-photo-input");
+
+        if (photoInput) {
+            photoInput.addEventListener("change", function () {
+                if (!this.files.length) return;
+
+                const file = this.files[0];
+                const allowedTypes = [
+                    "image/jpeg",
+                    "image/png",
+                    "image/webp"
+                ];
+
+                if (!allowedTypes.includes(file.type)) {
+                    alert("Please select a JPG, PNG, or WebP image.");
+                    this.value = "";
+                    return;
+                }
+
+                if (file.size > 5 * 1024 * 1024) {
+                    alert("Please select an image smaller than 5 MB.");
+                    this.value = "";
+                    return;
+                }
+
+                if (confirm("Upload this photo for {{ student_name | e }}?")) {
+                    document.getElementById("student-photo-form").submit();
+                } else {
+                    this.value = "";
+                }
+            });
+        }
+    </script>
+    {% endif %}
+
+    <!-- PROGRESS OVERVIEW -->
+    <h2 class="section-title">Progress Overview</h2>
+
+    <div class="progress-cards">
+
+        <div class="progress-card">
+            <span>Communication</span>
+            <strong>{{ averages.communication }}/5</strong>
+        </div>
+
+        <div class="progress-card">
+            <span>Social Interaction</span>
+            <strong>{{ averages.social_interaction }}/5</strong>
+        </div>
+
+        <div class="progress-card">
+            <span>Learning</span>
+            <strong>{{ averages.learning }}/5</strong>
+        </div>
+
+        <div class="progress-card">
+            <span>Hyperactivity</span>
+            <strong>{{ averages.hyperactivity }}/5</strong>
+        </div>
+
+        <div class="progress-card">
+            <span>Emotional State</span>
+            <strong>{{ averages.emotional_state }}/5</strong>
+        </div>
+
+        <div class="progress-card">
+            <span>Attendance</span>
+            <strong>{{ attendance_percentage }}%</strong>
+        </div>
+
+    </div>
+
+    <!-- OBSERVATION COUNT -->
+    <div class="info-box">
+        <strong>{{ total_observations }}</strong>
+        observations recorded for this student.
+    </div>
+
+    <!-- AI ANOMALY STATUS -->
+    <div class="ai-status-box">
+        <div class="ai-icon">🤖</div>
+
+        <div>
+            <h3>AI Pattern Analysis</h3>
+
+            {% if not ai_analysis_ready %}
+                <p>
+                    Not enough complete, present-student observations
+                    are available for reliable anomaly detection.
+                    The system currently has
+                    <strong>{{ analysis_observation_count }}</strong>
+                    eligible observation(s), and requires at least
+                    <strong>{{ minimum_ai_observations }}</strong>.
+                </p>
+
+                <span class="status-neutral">
+                    Data Collection in Progress
+                </span>
+
+            {% elif anomaly_count > 0 %}
+                <p>
+                    The system detected
+                    <strong>{{ anomaly_count }}</strong>
+                    unusual observation pattern(s) in the recorded data.
+                </p>
+                {% if flagged_observation_date %}
+<p class="summary-note">
+    <strong>Flagged Observation Date:</strong>
+    {{ flagged_observation_date }}
+</p>
+{% endif %}
+
+                <span class="status-warning">
+                    ⚠ Unusual Pattern Detected
+                </span>
+
+            {% else %}
+                <p>
+                    No unusual patterns were detected in the
+                    analyzed observations.
+                </p>
+
+                <span class="status-normal">
+                    ✓ Pattern Within Recorded Range
+                </span>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- OBSERVED AI CHANGES -->
+    {% if anomaly_changes %}
+    <div class="anomaly-changes-box">
+        <h3>🔎 Observed Changes</h3>
+
+        
+<p>
+    The AI system identified an unusual overall rating pattern.
+    The comparisons below show how the flagged observation
+    differs from earlier complete, present-student observations.
+</p>
+
+{% if anomaly_explanation %}
+<div class="summary-note">
+    <strong>AI Explanation:</strong>
+    {{ anomaly_explanation }}
+</div>
+{% endif %}
+
+<p>
+    An increase or decrease describes a rating change only;
+    it does not automatically indicate improvement or deterioration.
+    These results support teacher review and are not a diagnosis.
+</p>
+
+
+        <div class="changes-list">
+            {% for change in anomaly_changes %}
+            <div class="change-item">
+
+                <div class="change-name">
+                    <strong>{{ change.feature }}</strong>
+                </div>
+
+                <div class="change-values">
+                    <span>
+                        Previous:
+                        <strong>{{ change.previous }}</strong>
+                    </span>
+
+                    <span class="arrow">→</span>
+
+                    <span>
+                        Current:
+                        <strong>{{ change.current }}</strong>
+                    </span>
+
+                    {% if change.direction == "increased" %}
+                        <span class="change-up">↑ Increased</span>
+                    {% else %}
+                        <span class="change-down">↓ Decreased</span>
+                    {% endif %}
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- AI PROGRESS SUMMARY -->
+    {% if progress_summary %}
+    <div class="ai-summary-box">
+        <div class="summary-icon">🤖</div>
+
+        <div class="summary-content">
+            <h3>AI Progress Summary</h3>
+
+            <p>{{ progress_summary }}</p>
+
+            <div class="summary-note">
+                <strong>Note:</strong>
+                This summary is based only on recorded observations
+                and is intended to support monitoring. It is not a
+                medical diagnosis.
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- AI TREND ANALYSIS -->
+    {% if trend_analysis %}
+    <div class="ai-trend-box">
+
+        <div class="trend-header">
+            <div class="trend-icon">📊</div>
+
+            <div>
+                <h3>AI Trend Analysis</h3>
+
+                <p>
+                    Comparison of earlier and later recorded
+                    observations to identify simple patterns over time.
+                </p>
+            </div>
+        </div>
+
+        <div class="trend-grid">
+            {% for trend in trend_analysis %}
+            <div class="trend-card">
+
+                <div class="trend-card-top">
+                    <strong>{{ trend.feature }}</strong>
+                    <span class="trend-symbol">{{ trend.symbol }}</span>
+                </div>
+
+                <div class="trend-status
+                    {% if trend.direction == 'increasing' %}
+                        trend-increasing
+                    {% elif trend.direction == 'decreasing' %}
+                        trend-decreasing
+                    {% else %}
+                        trend-stable
+                    {% endif %}
+                ">
+                    {{ trend.label }}
+                </div>
+
+                <div class="trend-values">
+                    <span>
+                        Earlier:
+                        <strong>{{ trend.earlier }}</strong>
+                    </span>
+
+                    <span>
+                        Later:
+                        <strong>{{ trend.later }}</strong>
+                    </span>
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="trend-note">
+            <strong>Note:</strong>
+            This trend analysis is based only on recorded observations.
+            It supports monitoring and does not provide a medical diagnosis.
+        </div>
+
+    </div>
+    {% endif %}
+
+    <!-- AI OBSERVATION INSIGHTS -->
+    {% if observation_insights %}
+    <div class="ai-insights-box">
+
+        <div class="insights-header">
+            <div class="insights-icon">🧠</div>
+
+            <div>
+                <h3>AI Observation Insights</h3>
+                <p>
+                    Simple insights generated from recorded observation patterns.
+                </p>
+            </div>
+        </div>
+
+        <div class="insights-grid">
+            {% for insight in observation_insights["items"] %}
+            <div class="insight-card insight-{{ insight.type }}">
+
+                <div class="insight-top">
+                    <span class="insight-icon">{{ insight.icon }}</span>
+                    <strong>{{ insight.title }}</strong>
+                </div>
+
+                <p>{{ insight.message }}</p>
+
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="monitoring-suggestion">
+            <strong>🔎 Monitoring Suggestion</strong>
+            <p>{{ observation_insights["monitoring_message"] }}</p>
+        </div>
+
+        <div class="insights-note">
+            <strong>Note:</strong>
+            These insights are based only on recorded observations.
+            They support monitoring and do not provide a medical diagnosis.
+        </div>
+
+    </div>
+    {% endif %}
+
+    <!-- PROGRESS CHART -->
+    <h2 class="section-title">Learning &amp; Behavior Trend</h2>
+
+    <div class="chart-container">
+
+        <div
+            id="chartData"
+            data-dates="{{ dates | tojson | forceescape }}"
+            data-learning="{{ learning_scores | tojson | forceescape }}"
+            data-communication="{{ communication_scores | tojson | forceescape }}"
+            data-social="{{ social_scores | tojson | forceescape }}">
+        </div>
+
+        <canvas id="progressChart"></canvas>
+
+    </div>
+
+    <!-- RECENT OBSERVATIONS -->
+    <h2 class="section-title">Recent Observations</h2>
+
+    <div class="table-container">
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Learning</th>
+                    <th>Communication</th>
+                    <th>Social Interaction</th>
+                    <th>Remarks</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for observation in recent_observations %}
+
+                {% set attendance = observation.attendance
+                    |default('', true)
+                    |string
+                    |lower
+                    |trim
+                %}
+
+                <tr>
+                    <td>{{ observation.date }}</td>
+
+                    <td>
+                        {% if attendance != 'absent'
+                              and observation.learning is not none
+                              and observation.learning|string|lower != 'nan'
+                              and observation.learning|string|trim != '' %}
+                            {{ observation.learning }}/5
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if attendance != 'absent'
+                              and observation.communication is not none
+                              and observation.communication|string|lower != 'nan'
+                              and observation.communication|string|trim != '' %}
+                            {{ observation.communication }}/5
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if attendance != 'absent'
+                              and observation.social_interaction is not none
+                              and observation.social_interaction|string|lower != 'nan'
+                              and observation.social_interaction|string|trim != '' %}
+                            {{ observation.social_interaction }}/5
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if observation.remarks
+                              and observation.remarks|string|lower != 'nan' %}
+                            {{ observation.remarks }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                </tr>
+
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
+</main>
+
+<!-- CHART.JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const chartElement = document.getElementById("chartData");
+    const canvas = document.getElementById("progressChart");
+
+    if (!chartElement || !canvas) {
+        console.error("Chart data element or canvas was not found.");
+        return;
+    }
+
+    if (typeof Chart === "undefined") {
+        console.error("Chart.js failed to load.");
+        return;
+    }
+
+    let dates;
+    let learning;
+    let communication;
+    let social;
+
+    try {
+        dates = JSON.parse(chartElement.dataset.dates);
+        learning = JSON.parse(chartElement.dataset.learning);
+        communication = JSON.parse(chartElement.dataset.communication);
+        social = JSON.parse(chartElement.dataset.social);
+    } catch (error) {
+        console.error("Unable to read chart data:", error);
+        return;
+    }
+
+    if (
+        !Array.isArray(dates) ||
+        !Array.isArray(learning) ||
+        !Array.isArray(communication) ||
+        !Array.isArray(social)
+    ) {
+        console.error("Chart data must be arrays.");
+        return;
+    }
+
+    if (
+        dates.length === 0 ||
+        learning.length !== dates.length ||
+        communication.length !== dates.length ||
+        social.length !== dates.length
+    ) {
+        console.error("Chart labels and data lengths do not match.");
+        return;
+    }
+
+    /* Format dates without timezone shifting */
+    const dateCounts = {};
+    const dateOccurrences = {};
+
+    dates.forEach(function (date) {
+        const key = String(date);
+        dateCounts[key] = (dateCounts[key] || 0) + 1;
+    });
+
+    const displayDates = dates.map(function (date) {
+        const key = String(date);
+        const match = key.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+
+        let formattedDate = key;
+
+        if (match) {
+            const monthNames = [
+                "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+            ];
+
+            formattedDate =
+                match[3] + " " + monthNames[Number(match[2]) - 1];
+        }
+
+        if (dateCounts[key] > 1) {
+            dateOccurrences[key] = (dateOccurrences[key] || 0) + 1;
+            return formattedDate + " (" + dateOccurrences[key] + ")";
+        }
+
+        return formattedDate;
+    });
+
+    const isDark =
+        document.documentElement.dataset.theme === "dark";
+
+    const textColor = isDark ? "#e5e7eb" : "#374151";
+    const gridColor = isDark ? "#475569" : "#e5e7eb";
+
+    window.progressChart = new Chart(canvas, {
+        type: "line",
+
+        data: {
+            labels: displayDates,
+
+            datasets: [
+                {
+                    label: "Learning",
+                    data: learning,
+                    tension: 0.3,
+                    spanGaps: false
+                },
+                {
+                    label: "Communication",
+                    data: communication,
+                    tension: 0.3,
+                    spanGaps: false
+                },
+                {
+                    label: "Social Interaction",
+                    data: social,
+                    tension: 0.3,
+                    spanGaps: false
+                }
+            ]
+        },
+
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+
+            scales: {
+                y: {
+                    min: 0,
+                    max: 5,
+
+                    ticks: {
+                        stepSize: 1,
+                        color: textColor
+                    },
+
+                    grid: {
+                        color: gridColor
+                    },
+
+                    title: {
+                        display: true,
+                        text: "Observation Rating (0–5)",
+                        color: textColor
+                    }
+                },
+
+                x: {
+                    ticks: {
+                        color: textColor
+                    },
+
+                    grid: {
+                        color: gridColor
+                    },
+
+                    title: {
+                        display: true,
+                        text: "Observation Date",
+                        color: textColor
+                    }
+                }
+            },
+
+            plugins: {
+                legend: {
+                    display: true,
+                    position: "top",
+
+                    labels: {
+                        color: textColor
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+
+<!-- THEME TOGGLE -->
+<script>
+(function () {
+    const toggle = document.getElementById("themeToggle");
+
+    function applyTheme(theme) {
+        document.documentElement.dataset.theme = theme;
+
+        try {
+            localStorage.setItem("autism-monitor-theme", theme);
+        } catch (error) {
+            console.warn("Could not save theme preference.");
+        }
+
+        if (toggle) {
+            toggle.textContent =
+                theme === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode";
+
+            toggle.setAttribute(
+                "aria-label",
+                theme === "dark"
+                    ? "Switch to light theme"
+                    : "Switch to dark theme"
+            );
+        }
+
+        const chart = window.progressChart;
+
+        if (chart) {
+            const textColor =
+                theme === "dark" ? "#e5e7eb" : "#374151";
+
+            const gridColor =
+                theme === "dark" ? "#475569" : "#e5e7eb";
+
+            ["x", "y"].forEach(function (axis) {
+                chart.options.scales[axis].ticks.color = textColor;
+                chart.options.scales[axis].grid.color = gridColor;
+
+                if (chart.options.scales[axis].title) {
+                    chart.options.scales[axis].title.color = textColor;
+                }
+            });
+
+            chart.options.plugins.legend.labels.color = textColor;
+            chart.update();
+        }
+    }
+
+    if (toggle) {
+        toggle.addEventListener("click", function () {
+            const current =
+                document.documentElement.dataset.theme;
+
+            applyTheme(current === "dark" ? "light" : "dark");
+        });
+    }
+
+    applyTheme(
+        document.documentElement.dataset.theme === "dark"
+            ? "dark"
+            : "light"
+    );
+})();
+
+
+</script>
+
+</body>
+</html>

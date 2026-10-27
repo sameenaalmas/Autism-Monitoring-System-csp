@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Teacher Dashboard | Autism Monitor</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <!-- Apply saved theme before the page displays -->
+    <script>
+        (function () {
+            try {
+                const savedTheme =
+                    localStorage.getItem("autism-monitor-theme");
+
+                document.documentElement.dataset.theme =
+                    savedTheme === "dark" ? "dark" : "light";
+            } catch (error) {
+                document.documentElement.dataset.theme = "light";
+            }
+        })();
+    </script>
+</head>
+
+<body>
+
+<nav>
+    <div class="brand">
+        🧠 Autism Monitor
+    </div>
+
+    <div class="nav-links">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+
+        <a href="{{ url_for('students') }}">Students</a>
+
+        <a href="{{ url_for('add_observation') }}">
+            Add Observation
+        </a>
+
+        
+
+        <a href="{{ url_for('logout') }}"
+           class="logout-link">
+            Logout
+        </a>
+        <!-- Dark/light theme toggle -->
+        <button type="button"
+                id="themeToggle"
+                class="theme-toggle"
+                aria-label="Switch theme">
+            🌙 Dark Mode
+        </button>
+    </div>
+</nav>
+
+
+<main class="container">
+
+    <h1>Teacher Dashboard</h1>
+
+    <p class="subtitle">
+        Monitor student behavior, learning and progress.
+    </p>
+
+
+    
+<!-- DASHBOARD SUMMARY CARDS -->
+
+<div class="cards">
+
+    <div class="card">
+        <h3>Total Students</h3>
+        <div class="number">
+            {{ total_students }}
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Total Observations</h3>
+        <div class="number">
+            {{ total_observations }}
+        </div>
+    </div>
+
+    <div class="card alert-card">
+        <h3>Anomaly Alerts</h3>
+        <div class="number">
+            {{ anomaly_alerts }}
+        </div>
+        <p>AI-powered pattern monitoring</p>
+    </div>
+
+    <!-- TEACHER FOLLOW-UP SUMMARY -->
+
+    <div class="card">
+        <h3>Pending Reviews</h3>
+        <div class="number">
+            {{ followup_summary.pending }}
+        </div>
+        <p>Saved reviews awaiting completion</p>
+    </div>
+
+    <div class="card">
+        <h3>Reviewed</h3>
+        <div class="number">
+            {{ followup_summary.reviewed }}
+        </div>
+        <p>Follow-ups reviewed by teachers</p>
+    </div>
+
+    <div class="card alert-card">
+        <h3>Follow-up Required</h3>
+        <div class="number">
+            {{ followup_summary.required }}
+        </div>
+        <p>Observations marked for further attention</p>
+    </div>
+
+</div>
+
+
+
+    <!-- AI MONITORING ALERTS -->
+
+    <div class="dashboard-ai-section">
+
+        <div class="dashboard-ai-header">
+            <div>
+                <h2>🤖 AI Monitoring Alerts</h2>
+
+                <p>
+                    Unusual patterns identified from
+                    recorded student observations.
+                </p>
+            </div>
+        </div>
+
+
+        {% if ai_alerts %}
+
+            <div class="ai-alert-list">
+
+                {% for alert in ai_alerts %}
+
+                    <div class="dashboard-alert-card">
+
+                        <div class="dashboard-alert-icon">
+                            ⚠️
+                        </div>
+
+                        <div class="dashboard-alert-content">
+
+                            <h3>Unusual Pattern Detected</h3>
+
+                            <p>
+                                <strong>{{ alert.student_name }}</strong>
+                                ({{ alert.student_id }})
+                                has an observation pattern that
+                                differs noticeably from earlier
+                                recorded observations.
+                            </p>
+
+
+                            {% if alert.changes %}
+
+                                <div class="alert-changes">
+
+                                    <strong>Observed Changes:</strong>
+
+                                    <div class="alert-change-list">
+
+                                        {% for change in alert.changes %}
+
+                                            <span class="alert-change">
+                                                {{ change.feature }}
+
+                                                {% if change.direction == "increased" %}
+                                                    ↑
+                                                {% else %}
+                                                    ↓
+                                                {% endif %}
+                                            </span>
+
+                                        {% endfor %}
+
+                                    </div>
+                                </div>
+
+                            {% endif %}
+                            
+<!-- TEACHER FOLLOW-UP STATUS -->
+
+<div class="alert-followup-info">
+
+    <p>
+        <strong>Teacher Follow-up:</strong>
+
+        {% if alert.followup %}
+            {% if alert.followup.review_status == 'Reviewed' %}
+                <span>✓ Reviewed</span>
+            {% elif alert.followup.review_status == 'Follow-up Required' %}
+                <span>⚠ Follow-up Required</span>
+            {% else %}
+                <span>Pending</span>
+            {% endif %}
+        {% else %}
+            <span>Not Reviewed</span>
+        {% endif %}
+    </p>
+
+    {% if alert.followup and alert.followup.teacher_notes %}
+        <p>
+            <strong>Teacher Notes:</strong>
+            {{ alert.followup.teacher_notes }}
+        </p>
+    {% endif %}
+
+    {% if alert.flagged_observation_id %}
+        <a
+            href="{{ url_for(
+                'teacher_followup',
+                student_id=alert.student_id,
+                observation_id=alert.flagged_observation_id
+            ) }}"
+            class="view-alert-btn">
+            📝 Open Teacher Follow-up
+        </a>
+    {% endif %}
+
+</div>
+
+
+
+                            <a href="{{ url_for('student_progress', student_id=alert.student_id) }}"
+                               class="view-alert-btn">
+                                View Student Progress →
+                            </a>
+
+                        </div>
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="no-alerts-box">
+
+                <div class="no-alerts-icon">✓</div>
+
+                <div>
+                    <h3>No Unusual Patterns Detected</h3>
+
+                    <p>
+                        No unusual observation patterns were
+                        detected in the available student data.
+                    </p>
+                </div>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+
+    
+
+    <p class="monitoring-note">
+        AI monitoring highlights patterns in recorded observations.
+        It does not provide a medical diagnosis.
+    </p>
+
+</main>
+
+
+<!-- THEME SWITCHING SCRIPT -->
+
+<script>
+    (function () {
+        const themeToggle = document.getElementById("themeToggle");
+
+        function applyTheme(theme) {
+            document.documentElement.dataset.theme = theme;
+
+            try {
+                localStorage.setItem("autism-monitor-theme", theme);
+            } catch (error) {
+                console.warn("Theme preference could not be saved.");
+            }
+
+            themeToggle.textContent =
+                theme === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode";
+
+            themeToggle.setAttribute(
+                "aria-label",
+                theme === "dark"
+                    ? "Switch to light theme"
+                    : "Switch to dark theme"
+            );
+        }
+
+        const initialTheme =
+            document.documentElement.dataset.theme === "dark"
+                ? "dark"
+                : "light";
+
+        applyTheme(initialTheme);
+
+        themeToggle.addEventListener("click", function () {
+            const currentTheme =
+                document.documentElement.dataset.theme;
+
+            applyTheme(currentTheme === "dark" ? "light" : "dark");
+        });
+    })();
+</script>
+
+</body>
+</html>
